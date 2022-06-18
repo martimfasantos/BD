@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>{% block title %} SuperCategory {% endblock %}</h1>
+{% for superCategory in supercategory %}
+<div class='superCategory'>
+    <h3>#{{ superCategory[0] }}</h3>
+</div>
+{% endfor %}
+{% endblock %}
