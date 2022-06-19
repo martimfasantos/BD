@@ -31,8 +31,8 @@ CREATE TABLE tem_outra (
     super_categoria VARCHAR(50) NOT NULL,
     categoria VARCHAR(50) PRIMARY KEY,
     FOREIGN KEY (super_categoria) REFERENCES super_categoria(nome) ON DELETE CASCADE ON UPDATE CASCADE,
-    FOREIGN KEY (categoria) REFERENCES categoria(nome) ON DELETE CASCADE ON UPDATE CASCADE
-    CHECK (super_categoria != categoria) -- RI-RE5 --
+    FOREIGN KEY (categoria) REFERENCES categoria(nome) ON DELETE CASCADE ON UPDATE CASCADE,
+    CONSTRAINT CHK_category CHECK (super_categoria != categoria) -- RI-RE5 --
 );
 
 CREATE TABLE produto (
@@ -59,7 +59,7 @@ CREATE TABLE IVM (
 CREATE TABLE ponto_de_retalho (
     nome VARCHAR(50) PRIMARY KEY,
     distrito VARCHAR(50) NOT NULL,
-    concelho VARCHAR(50) NOT NULL,
+    concelho VARCHAR(50) NOT NULL
 );
 
 CREATE TABLE instalada_em (
@@ -68,7 +68,7 @@ CREATE TABLE instalada_em (
     local VARCHAR(50) NOT NULL,
     PRIMARY KEY (num_serie, fabricante),
     FOREIGN KEY (num_serie, fabricante) REFERENCES IVM(num_serie, fabricante) ON DELETE CASCADE ON UPDATE CASCADE,
-    FOREIGN KEY (local) REFERENCES ponto_de_retalho(local) ON DELETE CASCADE ON UPDATE CASCADE
+    FOREIGN KEY (local) REFERENCES ponto_de_retalho(nome) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 CREATE TABLE prateleira (
@@ -109,7 +109,7 @@ CREATE TABLE responsavel_por (
     PRIMARY KEY (num_serie, fabricante),
     FOREIGN KEY (num_serie, fabricante) REFERENCES IVM(num_serie, fabricante) ON DELETE CASCADE ON UPDATE CASCADE,
     FOREIGN KEY (tin) REFERENCES retalhista(tin) ON DELETE CASCADE ON UPDATE CASCADE,
-    FOREIGN KEY (nome_cat) REFERENCES categoria(nome_cat) ON DELETE CASCADE ON UPDATE CASCADE
+    FOREIGN KEY (nome_cat) REFERENCES categoria(nome) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 CREATE TABLE evento_reposicao (
@@ -122,6 +122,6 @@ CREATE TABLE evento_reposicao (
     tin CHAR(9) NOT NULL,
     PRIMARY KEY (ean, nro, num_serie, fabricante, instante),
     FOREIGN KEY (ean, nro, num_serie, fabricante) REFERENCES planograma(ean, nro, num_serie, fabricante) ON DELETE CASCADE ON UPDATE CASCADE,
-    FOREIGN KEY (tin) REFERENCES retalhista(tin) ON DELETE CASCADE ON UPDATE CASCADE,
-    CHECK (unidades <= planograma(unidades))    -- RI-RE8 --
+    FOREIGN KEY (tin) REFERENCES retalhista(tin) ON DELETE CASCADE ON UPDATE CASCADE
+    -- CONSTRAINT CHK_unidades CHECK (unidades <= planograma(unidades))    -- RI-RE8 --
 );
