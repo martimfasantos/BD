@@ -1,4 +1,3 @@
-
 import random
 import sys
 
@@ -18,16 +17,16 @@ descr = ["The European languages are members of the same family. Their separate 
         "new common language will be more simple and regular than the existing European languages. It will be as simple as Occide",
         "ge friend of mine told me what Occidental is.The European languages are members of the same family. Their separate exist",
         "mar, their pronunciation and their most common words. Everyone realizes why a new common language would be desirable: on",
-        "Now is the winter of our discontent. Made glorious summer by this sun of York. And all the clouds that lour'd upon our house. In the deep bosom of the ocean buried.",
-        "I, that am rudely stamp'd, and want love's majesty. To strut before a wanton ambling nymph; I, that am curtail'd of this fair proportion,",
+        "Now is the winter of our discontent. Made glorious summer by this sun of York. And all the clouds that lourd upon our house. In the deep bosom of the ocean buried.",
+        "I, that am rudely stampd, and want loves majesty. To strut before a wanton ambling nymph; I, that am curtaild of this fair proportion,",
         "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam at nisl diam. Vestibulum malesuada justo a dui consectetur malesuada."]
 
 # IVMs (8)
-num_serie = ["Ti7qtULz", "mnmDXFPUk", "VciCY2S", "Np2vty4", "x7wtnVNkL", "DTYURRKH", "MViAm8bM", "REhxLwu4"]
+num_serie = [1, 2, 3, 4, 5, 6, 7, 8]
 fabricante = ["Walmart Inc.", "Amazon.com Inc.", "Costco Wholesale Corp.", "Walgreens Boots Alliance Inc."]
 
 # Pontos de retalho (6)
-ponto_de_retalho = ["Giant Food Stores", "Primo Space" ]
+ponto_de_retalho = ["Giant Food Stores", "Primo Space", "Dollar Tree", "Ross Stores", "Giant Eagle", "AutoZone" ]
 distrito = ["Lisboa", "Faro"]
 concelho = ["Lisboa", "Albufeira", "Cascais", "Portimao"]
 
@@ -42,9 +41,9 @@ loc = ["loc1", "loc2", "loc3", "loc4", "loc5"]
 
 # Retalhista (5)
 tin = ["257399892", "257399823", "257391213", "257199892", "257399456"]
-retalhista = ["Verizon Wireless", "Kohl's", "Dollar General", "Sears Holdings", "Menard"]
+retalhista = ["Verizon Wireless", "Kohls", "Dollar General", "Sears Holdings", "Menard"]
 
-# Evento de Reposição (20)
+# Evento de Reposição (100)
 instante = ["2005-12-21 21:35:14", "2011-06-22 00:49:08", "2004-04-17 04:56:05", "2008-10-14 20:56:26", "2012-07-22 14:26:25", "2020-12-08 02:04:03", "2008-11-06 22:51:13", "2020-11-19 11:22:06", "2020-11-17 00:05:11", "2010-05-28 06:02:49"]
 unidadesE = [90, 50, 42, 6, 78, 34, 21, 44, 79, 8]
 
@@ -53,67 +52,63 @@ unidadesE = [90, 50, 42, 6, 78, 34, 21, 44, 79, 8]
 f = open("populate.sql", "w")
 sys.stdout = f 
 
-print(" \n---- Categoria ---- ")
+print(' \n---- Categoria ---- ')
 categoria = categoria_simples + super_categoria
 for i in range(15):
-    print("INSERT INTO categoria VALUES (\"{nome}\")".format(nome = categoria[i]))
+    print('INSERT INTO categoria VALUES (\'{nome}\');'.format(nome = categoria[i]))
 
-print(" \n---- Categoria Simples ---- ")
+print(' \n---- Categoria Simples ---- ')
 for i in range(10):
-    print("INSERT INTO categoria_simples VALUES (\"{nome}\")".format(nome = categoria_simples[i]))
+    print('INSERT INTO categoria_simples VALUES (\'{nome}\');'.format(nome = categoria_simples[i]))
 
-print(" \n---- Super Categoria ---- ")
+print(' \n---- Super Categoria ---- ')
 for i in range(5):
-    print("INSERT INTO super_categoria VALUES (\"{nome}\")".format(nome = super_categoria[i]))
+    print('INSERT INTO super_categoria VALUES (\'{nome}\');'.format(nome = super_categoria[i]))
 
-print(" \n---- tem_outra ---- ")
+print(' \n---- tem_outra ---- ')
 for i in range(10):
-    print("INSERT INTO tem_outra VALUES (\"{super_categoria}\", \"{categoria_simples}\")".format(   super_categoria = super_categoria[int(i/2)],
+    print('INSERT INTO tem_outra VALUES (\'{super_categoria}\', \'{categoria_simples}\');'.format(   super_categoria = super_categoria[int(i/2)],
                                                                                                     categoria_simples = categoria_simples[i]    ))
 
-print(" \n---- Super Categoria ---- ")
-for i in range(5):
-    print("INSERT INTO super_categoria VALUES (\"{nome}\")".format(nome = super_categoria[i]))
-
-print(" \n---- Produto ---- ")
+print(' \n---- Produto ---- ')
 for i in range(10):
-    print("INSERT INTO produto VALUES (\"{ean}\", \"{cat}\", \"{descr}\")".format(  ean = ean[i],
+    print('INSERT INTO produto VALUES (\'{ean}\', \'{cat}\', \'{descr}\');'.format(  ean = ean[i],
                                                                                     cat = categoria_simples[i],
                                                                                     descr = descr[i]    ))
 
-print(" \n---- tem_categoria ---- ")
+print(' \n---- tem_categoria ---- ')
 for i in range(10):
-    print("INSERT INTO tem_categoria VALUES (\"{ean}\", \"{nome}\")".format(    ean = ean[i],
+    print('INSERT INTO tem_categoria VALUES (\'{ean}\', \'{nome}\');'.format(    ean = ean[i],
                                                                                 nome = categoria_simples[i]     ))
 
-print(" \n---- IVM ---- ")
+print(' \n---- IVM ---- ')
 for i in range(8):
-    print("INSERT INTO IVM VALUES (\"{num_serie}\", \"{fabricante}\")".format(  num_serie = num_serie[i],
+    print('INSERT INTO IVM VALUES (\'{num_serie}\', \'{fabricante}\');'.format(  num_serie = num_serie[i],
                                                                                 fabricante = fabricante[i%len(fabricante)]  ))
                                                         
-print(" \n---- Ponto de Retalho ---- ")
+print(' \n---- Ponto de Retalho ---- ')
 for i in range(6):
-    print("INSERT INTO ponto_de_retalho VALUES (\"{nome}\", \"{distrito}\", \"{concelho}\")".format(    nome = ponto_de_retalho[i%len(ponto_de_retalho)],
+    print('INSERT INTO ponto_de_retalho VALUES (\'{nome}\', \'{distrito}\', \'{concelho}\');'.format(    nome = ponto_de_retalho[i],
                                                                                                         distrito = distrito[i%len(distrito)],
                                                                                                         concelho = concelho[i%len(concelho)]    ))
 
-print(" \n---- instalada_em ---- ")
+print(' \n---- instalada_em ---- ')
 for i in range(8):
-    print("INSERT INTO instalada_em VALUES (\"{num_serie}\", \"{fabricante}\", \"{local}\")".format(    num_serie = num_serie[i],
+    print('INSERT INTO instalada_em VALUES (\'{num_serie}\', \'{fabricante}\', \'{local}\');'.format(    num_serie = num_serie[i],
                                                                                                         fabricante = fabricante[i%len(fabricante)],
                                                                                                         local = ponto_de_retalho[i%len(ponto_de_retalho)]   ))
 
-print(" \n---- Prateleira ---- ")
+print(' \n---- Prateleira ---- ')
 for i in range(10):
-    print("INSERT INTO prateleira VALUES (\"{nro}\", \"{num_serie}\", \"{fabricante}\", \"{altura}\", \"{nome}\")".format(  nro = nro[i],
+    print('INSERT INTO prateleira VALUES (\'{nro}\', \'{num_serie}\', \'{fabricante}\', \'{altura}\', \'{nome}\');'.format(  nro = nro[i],
                                                                                                                             num_serie = num_serie[i%len(num_serie)],
                                                                                                                             fabricante = fabricante[i%len(fabricante)],
                                                                                                                             altura = altura[i%len(altura)],
                                                                                                                             nome = categoria_simples[i]     ))
 
-print(" \n---- Planograma ---- ")
+print(' \n---- Planograma ---- ')
 for i in range(10):
-    print("INSERT INTO planograma VALUES (\"{ean}\", \"{nro}\", \"{num_serie}\", \"{fabricante}\", \"{faces}\", \"{unidades}\", \"{loc}\")".format( ean = ean[i],
+    print('INSERT INTO planograma VALUES (\'{ean}\', \'{nro}\', \'{num_serie}\', \'{fabricante}\', \'{faces}\', \'{unidades}\', \'{loc}\');'.format( ean = ean[i],
                                                                                                                                                     nro = nro[i],
                                                                                                                                                     num_serie = num_serie[i%len(num_serie)],
                                                                                                                                                     fabricante = fabricante[i%len(fabricante)],
@@ -121,25 +116,25 @@ for i in range(10):
                                                                                                                                                     unidades = unidades[i%len(unidades)],
                                                                                                                                                     loc = loc[i%len(loc)]   ))
 
-print(" \n---- Retalhista ---- ")
+print(' \n---- Retalhista ---- ')
 for i in range(5):
-    print("INSERT INTO retalhista VALUES (\"{tin}\", \"{nome}\")".format(   tin = tin[i],
+    print('INSERT INTO retalhista VALUES (\'{tin}\', \'{nome}\');'.format(   tin = tin[i],
                                                                             nome = retalhista[i]    ))
 
-print(" \n---- responsavel_por ---- ")
+print(' \n---- responsavel_por ---- ')
 for i in range(5):
-    print("INSERT INTO responsavel_por VALUES (\"{nome_cat}\", \"{tin}\", \"{num_serie}\", \"{fabricante}\")".format(   nome_cat = categoria_simples[i],
+    print('INSERT INTO responsavel_por VALUES (\'{nome_cat}\', \'{tin}\', \'{num_serie}\', \'{fabricante}\');'.format(  nome_cat = categoria_simples[i],
                                                                                                                         tin = tin[i],
-                                                                                                                        num_serie = num_serie[i%len(num_serie)],
+                                                                                                                        num_serie = num_serie[i],
                                                                                                                         fabricante = fabricante[i%len(fabricante)]  ))
 
-print(" \n---- Evento de Reposicao ---- ")
-for i in range(20):
+print(' \n---- Evento de Reposicao ---- ')
+for i in range(10):
     for j in range(10):
-        print("INSERT INTO evento_reposicao VALUES (\"{ean}\", \"{nro}\", \"{num_serie}\", \"{fabricante}\", \"{instante}\", \"{unidades}\", \"{tin}\")".format(    ean = ean[i%len(ean)],
+        print('INSERT INTO evento_reposicao VALUES (\'{ean}\', \'{nro}\', \'{num_serie}\', \'{fabricante}\', \'{instante}\', \'{unidades}\', \'{tin}\');'.format(   ean = ean[j],
                                                                                                                                                                     nro = nro[j],
-                                                                                                                                                                    num_serie = num_serie[i%len(num_serie)],
-                                                                                                                                                                    fabricante = fabricante[i%len(fabricante)],
-                                                                                                                                                                    instante = instante[j%len(instante)],
-                                                                                                                                                                    unidades = unidadesE[j%len(unidadesE)],
-                                                                                                                                                                    tin = tin[i%len(tin)]   ))
+                                                                                                                                                                    num_serie = num_serie[j%len(num_serie)],
+                                                                                                                                                                    fabricante = fabricante[j%len(fabricante)],
+                                                                                                                                                                    instante = instante[i],
+                                                                                                                                                                    unidades = unidadesE[i%len(unidadesE)],
+                                                                                                                                                                    tin = tin[j%len(tin)]   ))
