@@ -17,7 +17,7 @@ def get_db_connection():
 def index():
     conn = get_db_connection()
     cur = conn.cursor()
-    cur.execute('SELECT * FROM category;')
+    cur.execute('SELECT * FROM categoria;')
     category = cur.fetchall()
     cur.close()
     conn.close()
@@ -32,7 +32,7 @@ def createCategory():
 
         conn = get_db_connection()
         cur = conn.cursor()
-        cur.execute('INSERT INTO category '
+        cur.execute('INSERT INTO categoria '
                     'VALUES (%s)',
                     (name,))
         conn.commit()
@@ -49,7 +49,7 @@ def createSuperCategory():
 
         conn = get_db_connection()
         cur = conn.cursor()
-        cur.execute('INSERT INTO supercategory '
+        cur.execute('INSERT INTO super_categoria '
                     'VALUES (%s)',
                     (name,))
         conn.commit()
@@ -62,7 +62,7 @@ def createSuperCategory():
 def listCategory():
     conn = get_db_connection()
     cur = conn.cursor()
-    cur.execute('SELECT * FROM category;')
+    cur.execute('SELECT * FROM categoria;')
     category = cur.fetchall()
     cur.close()
     conn.close()
@@ -73,7 +73,7 @@ def listCategory():
 def listSuperCategory():
     conn = get_db_connection()
     cur = conn.cursor()
-    cur.execute('SELECT * FROM supercategory;')
+    cur.execute('SELECT * FROM super_categoria;')
     supercategory = cur.fetchall()
     cur.close()
     conn.close()
