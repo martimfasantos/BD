@@ -1,17 +1,17 @@
-DROP TABLE IF EXISTS evento_reposicao;
-DROP TABLE IF EXISTS responsavel_por;
-DROP TABLE IF EXISTS retalhista;
-DROP TABLE IF EXISTS planograma;
-DROP TABLE IF EXISTS prateleira;
-DROP TABLE IF EXISTS instalada_em;
-DROP TABLE IF EXISTS ponto_de_retalho;
-DROP TABLE IF EXISTS IVM;
-DROP TABLE IF EXISTS tem_categoria;
-DROP TABLE IF EXISTS produto;
-DROP TABLE IF EXISTS tem_outra;
-DROP TABLE IF EXISTS super_categoria;
-DROP TABLE IF EXISTS categoria_simples;
-DROP TABLE IF EXISTS categoria;
+DROP TABLE IF EXISTS evento_reposicao CASCADE;
+DROP TABLE IF EXISTS responsavel_por CASCADE;
+DROP TABLE IF EXISTS retalhista CASCADE;
+DROP TABLE IF EXISTS planograma CASCADE;
+DROP TABLE IF EXISTS prateleira CASCADE;
+DROP TABLE IF EXISTS instalada_em CASCADE;
+DROP TABLE IF EXISTS ponto_de_retalho CASCADE;
+DROP TABLE IF EXISTS IVM CASCADE;
+DROP TABLE IF EXISTS tem_categoria CASCADE;
+DROP TABLE IF EXISTS produto CASCADE;
+DROP TABLE IF EXISTS tem_outra CASCADE;
+DROP TABLE IF EXISTS super_categoria CASCADE;
+DROP TABLE IF EXISTS categoria_simples CASCADE;
+DROP TABLE IF EXISTS categoria CASCADE;
 
 CREATE TABLE categoria (
     nome VARCHAR(50) PRIMARY KEY
@@ -104,8 +104,8 @@ CREATE TABLE retalhista (
 CREATE TABLE responsavel_por (
     nome_cat VARCHAR(50) NOT NULL,
     tin CHAR(9) NOT NULL,
-    num_serie SERIAL,
-    fabricante VARCHAR(50),
+    num_serie SERIAL NOT NULL,
+    fabricante VARCHAR(50) NOT NULL,
     PRIMARY KEY (num_serie, fabricante),
     FOREIGN KEY (num_serie, fabricante) REFERENCES IVM(num_serie, fabricante),
     FOREIGN KEY (tin) REFERENCES retalhista(tin),
