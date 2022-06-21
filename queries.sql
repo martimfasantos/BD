@@ -49,10 +49,8 @@ FROM evento_reposicao
 GROUP BY ean
 HAVING COUNT(DISTINCT tin) = 1;
 
--- ## Expected: 2662602572197 -> Pastel de Nata
---              3274673078338 -> Red Bull
+-- ## Expected: 3274673078338 -> Red Bull
 --              4040298751684 -> Lays Presunto
---              4832423897296 -> Leite UCAL Chocolate
 --              7499448750431 -> Perna de frango
 --              8601139975576 -> Hamburguer
 
