@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% block content %}
+<doctype html>
+    <title>Listar Categoria - Flask</title>
+    <body style="padding:20px">
+    {% if superCategoria %}
+    <table border="2px">
+        <thead>
+        <tr>
+            <th>Super Categoria</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for superCategoria in superCategoria %}
+        <tr>
+            <td>{{ superCategoria[0] }}</td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p> Error: failed to retrieve data from database!</p>
+    {% endif %}
+    </body>
+</doctype>
+{% endblock %}

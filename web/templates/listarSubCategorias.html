@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% block content %}
+<doctype html>
+    <title>Listar Replenishment Events(s) - Flask</title>
+    <body style="padding:20px">
+    {% if cursor %}
+    <table border="2px">
+        <thead>
+        <tr>
+            <th>Categoria</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for record in cursor %}
+        <tr>
+            <td>{{ record[0] }}</td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p> Error: failed to retreive data from database!</p>
+    {% endif %}
+    </body>
+</doctype>
+{% endblock %}

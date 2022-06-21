@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<a href="{{ url_for('listarCategoria') }}">Listar Categoria</a><br>
+<a href="{{ url_for('listarSuperCategoria') }}">Listar Super Categorias</a><br>
+<a href="{{ url_for('listarCategoriaSimples') }}">Listar Catgorias Simples</a><br>
+<a href="{{ url_for('listarSubCategoriasForm') }}"> Listar Subcategorias</a><br>
+<a href="{{ url_for('listarIVMForm') }}">Listar eventos reposição por IVM</a><br>
+
+{% endblock %}
