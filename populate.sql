@@ -152,12 +152,12 @@ INSERT INTO tem_outra VALUES ('Bebida', 'Bebidas Energeticas');
  
 ---- Produto ---- 
 INSERT INTO produto VALUES ('7499448750431', 'Take Away', 'Perna de frango');
-INSERT INTO produto VALUES ('8601139975576', 'Take Away', 'Hamburger');
+INSERT INTO produto VALUES ('8601139975576', 'Take Away', 'Hamburguer');
 INSERT INTO produto VALUES ('4040298751684', 'Snacks', 'Lays Presunto');
 INSERT INTO produto VALUES ('6466097307924', 'Bebidas Zero', 'Coca-Cola Zero');
 INSERT INTO produto VALUES ('3274673078338', 'Bebidas Energeticas', 'Red Bull');
 INSERT INTO produto VALUES ('2662602572197', 'Comida', 'Pastel de Nata');
-INSERT INTO produto VALUES ('4832423897296', 'Bebida', 'Ice Tea Limao');
+INSERT INTO produto VALUES ('4832423897296', 'Bebida', 'Leite UCAL Chocolate');
  
 ---- tem_categoria ---- 
 INSERT INTO tem_categoria VALUES ('2662602572197', 'Comida');
@@ -169,10 +169,12 @@ INSERT INTO tem_categoria VALUES ('3274673078338', 'Bebidas Energeticas');
 INSERT INTO tem_categoria VALUES ('8601139975576', 'Take Away');
  
 ---- IVM ---- 
-INSERT INTO IVM VALUES ('1', 'Tecnovending');
-INSERT INTO IVM VALUES ('2', 'Tecnovending');
-INSERT INTO IVM VALUES ('3', 'Activeblue');
-INSERT INTO IVM VALUES ('4', 'Activeblue');
+INSERT INTO IVM VALUES ('123', 'Tecnovending');
+INSERT INTO IVM VALUES ('234', 'Tecnovending');
+INSERT INTO IVM VALUES ('345', 'Activeblue');
+INSERT INTO IVM VALUES ('456', 'Activeblue');
+INSERT INTO IVM VALUES ('567', 'Tecnovending');
+INSERT INTO IVM VALUES ('678', 'Tecnovending');
  
 ---- Ponto de Retalho ---- 
 INSERT INTO ponto_de_retalho VALUES ('Pingo Doce Telheiras', 'Lisboa', 'Lisboa');
@@ -181,51 +183,55 @@ INSERT INTO ponto_de_retalho VALUES ('Continente Cascais', 'Lisboa', 'Cascais');
 INSERT INTO ponto_de_retalho VALUES ('Continente Praia da Rocha', 'Faro', 'Portimao');
  
 ---- instalada_em ---- 
-INSERT INTO instalada_em VALUES ('1', 'Tecnovending', 'Pingo Doce Telheiras');
-INSERT INTO instalada_em VALUES ('2', 'Tecnovending', 'Lidl Vilamoura');
-INSERT INTO instalada_em VALUES ('3', 'Activeblue', 'Continente Cascais');
-INSERT INTO instalada_em VALUES ('4', 'Activeblue', 'Continente Praia da Rocha');
+INSERT INTO instalada_em VALUES ('123', 'Tecnovending', 'Pingo Doce Telheiras');
+INSERT INTO instalada_em VALUES ('234', 'Tecnovending', 'Lidl Vilamoura');
+INSERT INTO instalada_em VALUES ('345', 'Activeblue', 'Continente Cascais');
+INSERT INTO instalada_em VALUES ('456', 'Activeblue', 'Continente Praia da Rocha');
+INSERT INTO instalada_em VALUES ('567', 'Tecnovending', 'Pingo Doce Telheiras');
+INSERT INTO instalada_em VALUES ('678', 'Tecnovending', 'Pingo Doce Telheiras');
  
 ---- Prateleira ---- 
-INSERT INTO prateleira VALUES ('1', '1', 'Tecnovending', '0.3', 'Comida');
-INSERT INTO prateleira VALUES ('2', '2', 'Tecnovending', '0.7', 'Take Away');
-INSERT INTO prateleira VALUES ('3', '3', 'Activeblue', '0.3', 'Snacks');
-INSERT INTO prateleira VALUES ('4', '4', 'Activeblue', '0.7', 'Bebida');
-INSERT INTO prateleira VALUES ('5', '1', 'Tecnovending', '0.3', 'Bebidas Zero');
-INSERT INTO prateleira VALUES ('6', '2', 'Tecnovending', '0.7', 'Bebidas Energeticas');
-INSERT INTO prateleira VALUES ('7', '3', 'Activeblue', '0.3', 'Take Away');
-INSERT INTO prateleira VALUES ('8', '4', 'Activeblue', '0.7', 'Bebidas Zero');
+INSERT INTO prateleira VALUES ('1', '123', 'Tecnovending', '0.2', 'Take Away');
+INSERT INTO prateleira VALUES ('2', '234', 'Tecnovending', '0.5', 'Snacks');
+INSERT INTO prateleira VALUES ('3', '567', 'Tecnovending', '0.3', 'Bebidas Zero');
+INSERT INTO prateleira VALUES ('4', '678', 'Tecnovending', '0.7', 'Bebidas Energeticas');
+INSERT INTO prateleira VALUES ('5', '345', 'Activeblue', '0.3', 'Snacks');
+INSERT INTO prateleira VALUES ('6', '456', 'Activeblue', '0.3', 'Take Away');
+INSERT INTO prateleira VALUES ('7', '456', 'Activeblue', '0.9', 'Bebidas Zero');
+INSERT INTO prateleira VALUES ('8', '456', 'Activeblue', '0.4', 'Comida');
  
 ---- Planograma ---- 
-INSERT INTO planograma VALUES ('2662602572197', '1', '1', 'Tecnovending', '3', '100', 'cima');
-INSERT INTO planograma VALUES ('7499448750431', '2', '2', 'Tecnovending', '4', '59', 'baixo');
-INSERT INTO planograma VALUES ('4040298751684', '3', '3', 'Activeblue', '7', '45', 'esquerda');
-INSERT INTO planograma VALUES ('4832423897296', '4', '4', 'Activeblue', '10', '44', 'direita');
-INSERT INTO planograma VALUES ('6466097307924', '5', '1', 'Tecnovending', '2', '40', 'cima');
-INSERT INTO planograma VALUES ('3274673078338', '6', '2', 'Tecnovending', '9', '55', 'baixo');
-INSERT INTO planograma VALUES ('8601139975576', '7', '3', 'Activeblue', '4', '23', 'esquerda');
-INSERT INTO planograma VALUES ('6466097307924', '8', '4', 'Activeblue', '5', '45', 'direita');
+INSERT INTO planograma VALUES ('7499448750431', '1', '123', 'Tecnovending', '3', '100', 'cima');
+INSERT INTO planograma VALUES ('8601139975576', '1', '123', 'Tecnovending', '4', '59', 'baixo');
+INSERT INTO planograma VALUES ('4040298751684', '2', '234', 'Tecnovending', '7', '45', 'esquerda');
+INSERT INTO planograma VALUES ('6466097307924', '3', '567', 'Tecnovending', '10', '44', 'direita');
+INSERT INTO planograma VALUES ('3274673078338', '4', '678', 'Tecnovending', '2', '40', 'cima');
+INSERT INTO planograma VALUES ('4040298751684', '5', '345', 'Activeblue', '9', '55', 'baixo');
+INSERT INTO planograma VALUES ('7499448750431', '6', '456', 'Activeblue', '4', '23', 'esquerda');
+INSERT INTO planograma VALUES ('6466097307924', '7', '456', 'Activeblue', '3', '56', 'direita');
+INSERT INTO planograma VALUES ('2662602572197', '8', '456', 'Activeblue', '1', '5', 'direita');
  
 ---- Retalhista ---- 
 INSERT INTO retalhista VALUES ('257399892', 'Tio Ze Manel');
-INSERT INTO retalhista VALUES ('257399823', 'Joao Pecado');
+INSERT INTO retalhista VALUES ('257399823', 'Joao Pecados');
  
 ---- responsavel_por ---- 
-INSERT INTO responsavel_por VALUES ('Comida', '257399892', '1', 'Tecnovending');
-INSERT INTO responsavel_por VALUES ('Bebidas Energeticas', '257399892', '2', 'Tecnovending');
-INSERT INTO responsavel_por VALUES ('Snacks', '257399892', '3', 'Activeblue');
-INSERT INTO responsavel_por VALUES ('Bebidas Zero', '257399823', '4', 'Activeblue');
+INSERT INTO responsavel_por VALUES ('Take Away', '257399892', '123', 'Tecnovending');
+INSERT INTO responsavel_por VALUES ('Snacks', '257399892', '234', 'Tecnovending');
+INSERT INTO responsavel_por VALUES ('Bebidas Zero', '257399892', '567', 'Tecnovending');
+INSERT INTO responsavel_por VALUES ('Bebidas Energeticas', '257399892', '678', 'Tecnovending');
+INSERT INTO responsavel_por VALUES ('Snacks', '257399892', '345', 'Activeblue');
+INSERT INTO responsavel_por VALUES ('Bebidas Zero', '257399823', '456', 'Activeblue');
  
 ---- Evento de Reposicao ---- 
-INSERT INTO evento_reposicao VALUES ('2662602572197', '1', '1', 'Tecnovending', '2005-12-21 21:35:14', '43', '257399892');
-INSERT INTO evento_reposicao VALUES ('2662602572197', '1', '1', 'Tecnovending', '2004-04-17 04:56:05', '42', '257399892');
-INSERT INTO evento_reposicao VALUES ('7499448750431', '2', '2', 'Tecnovending', '2004-04-17 04:56:05', '42', '257399892');
-INSERT INTO evento_reposicao VALUES ('7499448750431', '2', '2', 'Tecnovending', '2003-05-01 04:56:05', '13', '257399892');
-INSERT INTO evento_reposicao VALUES ('4040298751684', '3', '3', 'Activeblue', '2012-07-22 14:26:25', '28', '257399892');
-INSERT INTO evento_reposicao VALUES ('4832423897296', '4', '4', 'Activeblue', '2012-07-22 14:26:25', '28', '257399892');
-INSERT INTO evento_reposicao VALUES ('4832423897296', '4', '4', 'Activeblue', '2020-11-19 11:22:06', '44', '257399892');
-INSERT INTO evento_reposicao VALUES ('3274673078338', '6', '2', 'Tecnovending', '2020-11-19 11:22:06', '44', '257399892');
-INSERT INTO evento_reposicao VALUES ('3274673078338', '6', '2', 'Tecnovending', '2020-11-17 00:05:11', '10', '257399892');
-INSERT INTO evento_reposicao VALUES ('8601139975576', '7', '3', 'Activeblue', '2020-11-19 11:22:06', '44', '257399892');
-INSERT INTO evento_reposicao VALUES ('6466097307924', '8', '4', 'Activeblue', '2020-11-19 11:22:06', '12', '257399823');
-INSERT INTO evento_reposicao VALUES ('6466097307924', '8', '4', 'Activeblue', '2020-12-08 02:04:03', '3', '257399823');
+INSERT INTO evento_reposicao VALUES ('7499448750431', '1', '123', 'Tecnovending', '2005-12-21 21:35:14', '43', '257399892');
+INSERT INTO evento_reposicao VALUES ('8601139975576', '1', '123', 'Tecnovending', '2004-04-17 04:56:05', '42', '257399892');
+INSERT INTO evento_reposicao VALUES ('4040298751684', '2', '234', 'Tecnovending', '2004-04-17 04:56:05', '42', '257399892');
+INSERT INTO evento_reposicao VALUES ('4040298751684', '2', '234', 'Tecnovending', '2003-05-01 04:56:05', '13', '257399892');
+INSERT INTO evento_reposicao VALUES ('6466097307924', '3', '567', 'Tecnovending', '2012-07-22 14:26:25', '28', '257399892');
+INSERT INTO evento_reposicao VALUES ('3274673078338', '4', '678', 'Tecnovending', '2012-07-22 14:26:25', '28', '257399892');
+INSERT INTO evento_reposicao VALUES ('4040298751684', '5', '345', 'Activeblue', '2020-11-19 11:22:06', '44', '257399892');
+INSERT INTO evento_reposicao VALUES ('7499448750431', '6', '456', 'Activeblue', '2020-11-19 11:22:06', '44', '257399892');
+INSERT INTO evento_reposicao VALUES ('7499448750431', '6', '456', 'Activeblue', '2020-11-17 00:05:11', '10', '257399892');
+INSERT INTO evento_reposicao VALUES ('6466097307924', '7', '456', 'Activeblue', '2020-11-19 11:22:06', '44', '257399892');
+INSERT INTO evento_reposicao VALUES ('6466097307924', '7', '456', 'Activeblue', '2020-12-08 02:04:03', '12', '257399823');

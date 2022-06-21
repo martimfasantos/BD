@@ -1,29 +1,36 @@
+DROP TRIGGER IF EXISTS ri1 ON tem_outra;
+DROP TRIGGER IF EXISTS ri4 ON evento_reposicao;
+DROP TRIGGER IF EXISTS ri5 ON evento_reposicao;
+
+---------------------------------------------------------------
 -- (RI-1) Uma Categoria nao pode estar contida em si propria --
-DELIMITER //
+---------------------------------------------------------------
 
-DROP TRIGGER IF EXISTS RI1
-CREATE TRIGGER RI1 
-BEFORE UPDATE OR INSERT ON tem_outra
-FOR EACH ROW
-BEGIN 
+CREATE OR REPLACE FUNCTION nao_contem() RETURNS TRIGGER AS
+$$
+BEGIN
     IF NEW.super_categoria = NEW.categoria THEN
-        RAISERROR ('Categoria nao pode estar contida em si própria');
-    END IF
-END
+        RAISE EXCEPTION 'Categoria nao pode estar contida em si própria';
+    END IF;
 
-DELIMITER ;
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
 
+CREATE TRIGGER ri1 
+BEFORE UPDATE OR INSERT ON tem_outra
+FOR EACH ROW EXECUTE PROCEDURE nao_contem();
+
+
+-----------------------------------------------------------------------------
 -- (RI-4) O número de unidades repostas num Evento de Reposição 
 --        não pode exceder o número de unidades especificado no Planograma --
-DELIMITER //
+-----------------------------------------------------------------------------
 
-DROP TRIGGER IF EXISTS RI4
-CREATE TRIGGER RI4 
-BEFORE UPDATE OR INSERT ON evento_reposicao
-FOR EACH ROW
-BEGIN 
-    DECLARE max_unidades INTEGER;
-
+CREATE OR REPLACE FUNCTION nao_excede() RETURNS TRIGGER AS
+$$
+DECLARE max_unidades INTEGER;
+BEGIN
     SELECT unidades INTO max_unidades
     FROM planograma
     WHERE planograma.ean = NEW.ean
@@ -32,40 +39,54 @@ BEGIN
       AND planograma.fabricante = NEW.num_serie;
     
     IF NEW.unidades > max_unidades THEN
-        RAISERROR ('Numero de unidades nao deve excede as especificadas no Planograma.')
-    END IF
-END
+        RAISE EXCEPTION 'Numero de unidades nao deve excede as especificadas no Planograma: %', max_unidades;
+    END IF;
 
-DELIMITER ;
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
 
+CREATE TRIGGER ri4 
+BEFORE UPDATE OR INSERT ON evento_reposicao
+FOR EACH ROW EXECUTE PROCEDURE nao_excede();
+
+
+--------------------------------------------------------------------
 -- (RI-5) Um Produto só pode ser reposto numa Prateleira que 
 --        apresente (pelo menos) uma das Categorias desse produto --
-DELIMITER //
+--------------------------------------------------------------------
 
-DROP TRIGGER IF EXISTS RI5
-CREATE TRIGGER RI5 
-BEFORE UPDATE OR INSERT ON evento_reposicao
-FOR EACH ROW
-BEGIN 
-    DECLARE categ_prateleira VARCHAR(50);
-    DECLARE categs_produto CURSOR FOR 
+CREATE OR REPLACE FUNCTION apresenta_categoria() RETURNS TRIGGER AS
+$$
+DECLARE 
+    categ_prateleira VARCHAR(50);
+    categs_produto CURSOR FOR 
         SELECT nome FROM tem_categoria WHERE ean = NEW.ean;
-    DECLARE categoria VARCHAR(50);
-    DECLARE valido BIT(1) DEFAULT FALSE;
+    categoria VARCHAR(50);
+BEGIN
+    SELECT nome
+    INTO categ_prateleira
+    FROM prateleira
+    WHERE nro = NEW.nro 
+        AND num_serie = NEW.num_serie 
+        AND fabricante = NEW.fabricante;
     
     OPEN categs_produto;
-    FETCH NEXT FROM categs_produto INTO categoria 
-    WHILE @@FETCH_STATUS = 0 
-        BEGIN
-            IF categoria = categoria_prat THEN
-                SET valido = TRUE;
-                BREAK;
-            END IF;
-            FETCH NEXT FROM categs_produto INTO categoria 
-        END
-    IF valido = FALSE THEN
-        RAISERROR ('Produto nao pode ser reposto nesta Prateleira.') ;
-    END IF
-END
+    LOOP
+        FETCH NEXT FROM categs_produto INTO categoria;
+        EXIT WHEN NOT FOUND; 
 
-DELIMITER ;
+        IF categoria = categoria_prat THEN
+            RETURN NEW;
+        END IF;
+
+    END LOOP;
+    CLOSE categs_produto;
+        
+    RAISE EXCEPTION 'Produto nao pode ser reposto nesta Prateleira.';
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER ri5
+BEFORE UPDATE OR INSERT ON evento_reposicao
+FOR EACH ROW EXECUTE PROCEDURE apresenta_categoria();
