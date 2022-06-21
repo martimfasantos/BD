@@ -1,182 +1,231 @@
- 
+DROP TABLE IF EXISTS evento_reposicao;
+DROP TABLE IF EXISTS responsavel_por;
+DROP TABLE IF EXISTS retalhista;
+DROP TABLE IF EXISTS planograma;
+DROP TABLE IF EXISTS prateleira;
+DROP TABLE IF EXISTS instalada_em;
+DROP TABLE IF EXISTS ponto_de_retalho;
+DROP TABLE IF EXISTS IVM;
+DROP TABLE IF EXISTS tem_categoria;
+DROP TABLE IF EXISTS produto;
+DROP TABLE IF EXISTS tem_outra;
+DROP TABLE IF EXISTS super_categoria;
+DROP TABLE IF EXISTS categoria_simples;
+DROP TABLE IF EXISTS categoria;
+
+CREATE TABLE categoria (
+    nome VARCHAR(50) PRIMARY KEY
+);
+
+CREATE TABLE categoria_simples (
+    nome VARCHAR(50) PRIMARY KEY,
+    FOREIGN KEY (nome) REFERENCES categoria(nome)
+);
+
+CREATE TABLE super_categoria (
+    nome VARCHAR(50) PRIMARY KEY,
+    FOREIGN KEY (nome) REFERENCES categoria(nome)
+);
+
+CREATE TABLE tem_outra (
+    super_categoria VARCHAR(50) NOT NULL,
+    categoria VARCHAR(50) PRIMARY KEY,
+    FOREIGN KEY (super_categoria) REFERENCES super_categoria(nome),
+    FOREIGN KEY (categoria) REFERENCES categoria(nome),
+    CONSTRAINT CHK_category CHECK (super_categoria != categoria) -- RI-RE5 --
+);
+
+CREATE TABLE produto (
+    ean CHAR(13) PRIMARY KEY,
+    cat VARCHAR(50) NOT NULL, 
+    descr VARCHAR(200),
+    FOREIGN KEY (cat) REFERENCES categoria(nome)
+);
+    
+CREATE TABLE tem_categoria (
+    ean CHAR(13) NOT NULL,
+    nome VARCHAR(50) NOT NULL, 
+    PRIMARY KEY (ean, nome),
+    FOREIGN KEY (ean) REFERENCES produto(ean),
+    FOREIGN KEY (nome) REFERENCES categoria(nome)
+);
+
+CREATE TABLE IVM (
+    num_serie SERIAL NOT NULL,
+    fabricante VARCHAR(50) NOT NULL, 
+    PRIMARY KEY (num_serie, fabricante)
+);
+
+CREATE TABLE ponto_de_retalho (
+    nome VARCHAR(50) PRIMARY KEY,
+    distrito VARCHAR(50) NOT NULL,
+    concelho VARCHAR(50) NOT NULL
+);
+
+CREATE TABLE instalada_em (
+    num_serie SERIAL NOT NULL,
+    fabricante VARCHAR(50) NOT NULL,
+    local VARCHAR(50) NOT NULL,
+    PRIMARY KEY (num_serie, fabricante),
+    FOREIGN KEY (num_serie, fabricante) REFERENCES IVM(num_serie, fabricante),
+    FOREIGN KEY (local) REFERENCES ponto_de_retalho(nome)
+);
+
+CREATE TABLE prateleira (
+    nro INTEGER NOT NULL,
+    num_serie SERIAL NOT NULL,
+    fabricante VARCHAR(50) NOT NULL,
+    altura FLOAT,
+    nome VARCHAR(50) NOT NULL,
+    PRIMARY KEY (nro, num_serie, fabricante),
+    FOREIGN KEY (num_serie, fabricante) REFERENCES IVM(num_serie, fabricante),
+    FOREIGN KEY (nome) REFERENCES categoria(nome)
+);
+
+CREATE TABLE planograma (
+    ean CHAR(13) NOT NULL,
+    nro INTEGER NOT NULL,
+    num_serie SERIAL NOT NULL,
+    fabricante VARCHAR(50) NOT NULL,
+    faces INTEGER,
+    unidades INTEGER,
+    loc VARCHAR(50),
+    PRIMARY KEY (ean, nro, num_serie, fabricante),
+    FOREIGN KEY (ean) REFERENCES produto(ean),
+    FOREIGN KEY (nro, num_serie, fabricante) REFERENCES prateleira(nro, num_serie, fabricante)
+);
+
+CREATE TABLE retalhista (
+    tin CHAR(9) PRIMARY KEY,
+    nome VARCHAR(50) NOT NULL,
+    UNIQUE(nome)    -- RI-RE7 --
+);
+
+CREATE TABLE responsavel_por (
+    nome_cat VARCHAR(50) NOT NULL,
+    tin CHAR(9) NOT NULL,
+    num_serie SERIAL NOT NULL,
+    fabricante VARCHAR(50) NOT NULL,
+    PRIMARY KEY (num_serie, fabricante),
+    FOREIGN KEY (num_serie, fabricante) REFERENCES IVM(num_serie, fabricante),
+    FOREIGN KEY (tin) REFERENCES retalhista(tin),
+    FOREIGN KEY (nome_cat) REFERENCES categoria(nome)
+);
+
+CREATE TABLE evento_reposicao (
+    ean CHAR(13) NOT NULL,
+    nro INTEGER NOT NULL,
+    num_serie SERIAL NOT NULL,
+    fabricante VARCHAR(50) NOT NULL,
+    instante TIMESTAMP,
+    unidades INTEGER,
+    tin CHAR(9) NOT NULL,
+    PRIMARY KEY (ean, nro, num_serie, fabricante, instante),
+    FOREIGN KEY (ean, nro, num_serie, fabricante) REFERENCES planograma(ean, nro, num_serie, fabricante),
+    FOREIGN KEY (tin) REFERENCES retalhista(tin)
+);
+
+
 ---- Categoria ---- 
-INSERT INTO categoria VALUES ('Computers');
-INSERT INTO categoria VALUES ('Smartphones');
-INSERT INTO categoria VALUES ('Pre-cooked Meals');
-INSERT INTO categoria VALUES ('Healthy');
-INSERT INTO categoria VALUES ('Powders');
-INSERT INTO categoria VALUES ('Energy Drinks');
-INSERT INTO categoria VALUES ('Electronics');
-INSERT INTO categoria VALUES ('Food');
-INSERT INTO categoria VALUES ('Supplements');
- 
----- Categoria Simples ---- 
-INSERT INTO categoria_simples VALUES ('Computers');
-INSERT INTO categoria_simples VALUES ('Smartphones');
-INSERT INTO categoria_simples VALUES ('Pre-cooked Meals');
-INSERT INTO categoria_simples VALUES ('Healthy');
-INSERT INTO categoria_simples VALUES ('Powders');
-INSERT INTO categoria_simples VALUES ('Energy Drinks');
+INSERT INTO categoria VALUES ('Comida');
+INSERT INTO categoria VALUES ('Bebida');
+INSERT INTO categoria VALUES ('Take Away');
+INSERT INTO categoria VALUES ('Snacks');
+INSERT INTO categoria VALUES ('Bebidas Zero');
+INSERT INTO categoria VALUES ('Bebidas Energeticas');
  
 ---- Super Categoria ---- 
-INSERT INTO super_categoria VALUES ('Electronics');
-INSERT INTO super_categoria VALUES ('Food');
-INSERT INTO super_categoria VALUES ('Supplements');
+INSERT INTO super_categoria VALUES ('Comida');
+INSERT INTO super_categoria VALUES ('Bebida');
+
+---- Categoria Simples ---- 
+INSERT INTO categoria_simples VALUES ('Take Away');
+INSERT INTO categoria_simples VALUES ('Snacks');
+INSERT INTO categoria_simples VALUES ('Bebidas Zero');
+INSERT INTO categoria_simples VALUES ('Bebidas Energeticas');
  
 ---- tem_outra ---- 
-INSERT INTO tem_outra VALUES ('Electronics', 'Computers');
-INSERT INTO tem_outra VALUES ('Electronics', 'Smartphones');
-INSERT INTO tem_outra VALUES ('Food', 'Pre-cooked Meals');
-INSERT INTO tem_outra VALUES ('Food', 'Healthy');
-INSERT INTO tem_outra VALUES ('Supplements', 'Powders');
-INSERT INTO tem_outra VALUES ('Supplements', 'Energy Drinks');
+INSERT INTO tem_outra VALUES ('Comida', 'Take Away');
+INSERT INTO tem_outra VALUES ('Comida', 'Snacks');
+INSERT INTO tem_outra VALUES ('Bebida', 'Bebidas Zero');
+INSERT INTO tem_outra VALUES ('Bebida', 'Bebidas Energeticas');
  
 ---- Produto ---- 
-INSERT INTO produto VALUES ('7499448750431', 'Computers', 'DELL');
-INSERT INTO produto VALUES ('8601139975576', 'Smartphones', 'Nokia');
-INSERT INTO produto VALUES ('4040298751684', 'Pre-cooked Meals', 'Hamburguer');
-INSERT INTO produto VALUES ('6466097307924', 'Healthy', 'Salad');
-INSERT INTO produto VALUES ('3274673078338', 'Powders', 'Whey Protein');
-INSERT INTO produto VALUES ('8042081738117', 'Energy Drinks', 'Red Bull');
-INSERT INTO produto VALUES ('2662602572197', 'Computers', 'Mac');
-INSERT INTO produto VALUES ('4832423897296', 'Smartphones', 'iPhone');
+INSERT INTO produto VALUES ('7499448750431', 'Take Away', 'Perna de frango');
+INSERT INTO produto VALUES ('8601139975576', 'Take Away', 'Hamburger');
+INSERT INTO produto VALUES ('4040298751684', 'Snacks', 'Lays Presunto');
+INSERT INTO produto VALUES ('6466097307924', 'Bebidas Zero', 'Coca-Cola Zero');
+INSERT INTO produto VALUES ('3274673078338', 'Bebidas Energeticas', 'Red Bull');
+INSERT INTO produto VALUES ('2662602572197', 'Comida', 'Pastel de Nata');
+INSERT INTO produto VALUES ('4832423897296', 'Bebida', 'Ice Tea Limao');
  
 ---- tem_categoria ---- 
-INSERT INTO tem_categoria VALUES ('7499448750431', 'Computers');
-INSERT INTO tem_categoria VALUES ('8601139975576', 'Smartphones');
-INSERT INTO tem_categoria VALUES ('4040298751684', 'Pre-cooked Meals');
-INSERT INTO tem_categoria VALUES ('6466097307924', 'Healthy');
-INSERT INTO tem_categoria VALUES ('3274673078338', 'Powders');
-INSERT INTO tem_categoria VALUES ('8042081738117', 'Energy Drinks');
-INSERT INTO tem_categoria VALUES ('2662602572197', 'Computers');
-INSERT INTO tem_categoria VALUES ('4832423897296', 'Smartphones');
+INSERT INTO tem_categoria VALUES ('2662602572197', 'Comida');
+INSERT INTO tem_categoria VALUES ('7499448750431', 'Take Away');
+INSERT INTO tem_categoria VALUES ('4040298751684', 'Snacks');
+INSERT INTO tem_categoria VALUES ('4832423897296', 'Bebida');
+INSERT INTO tem_categoria VALUES ('6466097307924', 'Bebidas Zero');
+INSERT INTO tem_categoria VALUES ('3274673078338', 'Bebidas Energeticas');
+INSERT INTO tem_categoria VALUES ('8601139975576', 'Take Away');
  
 ---- IVM ---- 
-INSERT INTO IVM VALUES ('1', 'Walmart Inc.');
-INSERT INTO IVM VALUES ('2', 'Amazon.com Inc.');
-INSERT INTO IVM VALUES ('3', 'Walmart Inc.');
-INSERT INTO IVM VALUES ('4', 'Amazon.com Inc.');
+INSERT INTO IVM VALUES ('1', 'Tecnovending');
+INSERT INTO IVM VALUES ('2', 'Tecnovending');
+INSERT INTO IVM VALUES ('3', 'Activeblue');
+INSERT INTO IVM VALUES ('4', 'Activeblue');
  
 ---- Ponto de Retalho ---- 
-INSERT INTO ponto_de_retalho VALUES ('Giant Food Stores', 'Lisboa', 'Lisboa');
-INSERT INTO ponto_de_retalho VALUES ('Primo Space', 'Faro', 'Albufeira');
-INSERT INTO ponto_de_retalho VALUES ('Dollar Tree', 'Lisboa', 'Cascais');
-INSERT INTO ponto_de_retalho VALUES ('Ross Stores', 'Faro', 'Portimao');
-INSERT INTO ponto_de_retalho VALUES ('Giant Eagle', 'Lisboa', 'Lisboa');
-INSERT INTO ponto_de_retalho VALUES ('AutoZone', 'Faro', 'Albufeira');
+INSERT INTO ponto_de_retalho VALUES ('Pingo Doce Telheiras', 'Lisboa', 'Lisboa');
+INSERT INTO ponto_de_retalho VALUES ('Lidl Vilamoura', 'Faro', 'Albufeira');
+INSERT INTO ponto_de_retalho VALUES ('Continente Cascais', 'Lisboa', 'Cascais');
+INSERT INTO ponto_de_retalho VALUES ('Continente Praia da Rocha', 'Faro', 'Portimao');
  
 ---- instalada_em ---- 
-INSERT INTO instalada_em VALUES ('1', 'Walmart Inc.', 'Giant Food Stores');
-INSERT INTO instalada_em VALUES ('2', 'Amazon.com Inc.', 'Primo Space');
-INSERT INTO instalada_em VALUES ('3', 'Walmart Inc.', 'Dollar Tree');
-INSERT INTO instalada_em VALUES ('4', 'Amazon.com Inc.', 'Ross Stores');
+INSERT INTO instalada_em VALUES ('1', 'Tecnovending', 'Pingo Doce Telheiras');
+INSERT INTO instalada_em VALUES ('2', 'Tecnovending', 'Lidl Vilamoura');
+INSERT INTO instalada_em VALUES ('3', 'Activeblue', 'Continente Cascais');
+INSERT INTO instalada_em VALUES ('4', 'Activeblue', 'Continente Praia da Rocha');
  
 ---- Prateleira ---- 
-INSERT INTO prateleira VALUES ('1', '1', 'Walmart Inc.', '0.3', 'Computers');
-INSERT INTO prateleira VALUES ('2', '2', 'Amazon.com Inc.', '0.7', 'Smartphones');
-INSERT INTO prateleira VALUES ('3', '3', 'Walmart Inc.', '0.3', 'Pre-cooked Meals');
-INSERT INTO prateleira VALUES ('4', '4', 'Amazon.com Inc.', '0.7', 'Healthy');
-INSERT INTO prateleira VALUES ('5', '1', 'Walmart Inc.', '0.3', 'Powders');
-INSERT INTO prateleira VALUES ('6', '2', 'Amazon.com Inc.', '0.7', 'Energy Drinks');
-INSERT INTO prateleira VALUES ('7', '3', 'Walmart Inc.', '0.3', 'Computers');
-INSERT INTO prateleira VALUES ('8', '4', 'Amazon.com Inc.', '0.7', 'Smartphones');
+INSERT INTO prateleira VALUES ('1', '1', 'Tecnovending', '0.3', 'Comida');
+INSERT INTO prateleira VALUES ('2', '2', 'Tecnovending', '0.7', 'Take Away');
+INSERT INTO prateleira VALUES ('3', '3', 'Activeblue', '0.3', 'Snacks');
+INSERT INTO prateleira VALUES ('4', '4', 'Activeblue', '0.7', 'Bebida');
+INSERT INTO prateleira VALUES ('5', '1', 'Tecnovending', '0.3', 'Bebidas Zero');
+INSERT INTO prateleira VALUES ('6', '2', 'Tecnovending', '0.7', 'Bebidas Energeticas');
+INSERT INTO prateleira VALUES ('7', '3', 'Activeblue', '0.3', 'Take Away');
+INSERT INTO prateleira VALUES ('8', '4', 'Activeblue', '0.7', 'Bebidas Zero');
  
 ---- Planograma ---- 
-INSERT INTO planograma VALUES ('7499448750431', '1', '1', 'Walmart Inc.', '3', '100', 'loc1');
-INSERT INTO planograma VALUES ('8601139975576', '2', '2', 'Amazon.com Inc.', '4', '59', 'loc2');
-INSERT INTO planograma VALUES ('4040298751684', '3', '3', 'Walmart Inc.', '7', '45', 'loc3');
-INSERT INTO planograma VALUES ('6466097307924', '4', '4', 'Amazon.com Inc.', '10', '44', 'loc4');
-INSERT INTO planograma VALUES ('3274673078338', '5', '1', 'Walmart Inc.', '2', '40', 'loc1');
-INSERT INTO planograma VALUES ('8042081738117', '6', '2', 'Amazon.com Inc.', '9', '55', 'loc2');
-INSERT INTO planograma VALUES ('2662602572197', '7', '3', 'Walmart Inc.', '4', '23', 'loc3');
-INSERT INTO planograma VALUES ('4832423897296', '8', '4', 'Amazon.com Inc.', '5', '45', 'loc4');
+INSERT INTO planograma VALUES ('2662602572197', '1', '1', 'Tecnovending', '3', '100', 'cima');
+INSERT INTO planograma VALUES ('7499448750431', '2', '2', 'Tecnovending', '4', '59', 'baixo');
+INSERT INTO planograma VALUES ('4040298751684', '3', '3', 'Activeblue', '7', '45', 'esquerda');
+INSERT INTO planograma VALUES ('4832423897296', '4', '4', 'Activeblue', '10', '44', 'direita');
+INSERT INTO planograma VALUES ('6466097307924', '5', '1', 'Tecnovending', '2', '40', 'cima');
+INSERT INTO planograma VALUES ('3274673078338', '6', '2', 'Tecnovending', '9', '55', 'baixo');
+INSERT INTO planograma VALUES ('8601139975576', '7', '3', 'Activeblue', '4', '23', 'esquerda');
+INSERT INTO planograma VALUES ('6466097307924', '8', '4', 'Activeblue', '5', '45', 'direita');
  
 ---- Retalhista ---- 
-INSERT INTO retalhista VALUES ('257399892', 'Michael Jackson');
-INSERT INTO retalhista VALUES ('257399823', 'Johnny Sins');
+INSERT INTO retalhista VALUES ('257399892', 'Tio Ze Manel');
+INSERT INTO retalhista VALUES ('257399823', 'Joao Pecado');
  
 ---- responsavel_por ---- 
-INSERT INTO responsavel_por VALUES ('Computers', '257399892', '1', 'Walmart Inc.');
-INSERT INTO responsavel_por VALUES ('Smartphones', '257399823', '2', 'Amazon.com Inc.');
+INSERT INTO responsavel_por VALUES ('Comida', '257399892', '1', 'Tecnovending');
+INSERT INTO responsavel_por VALUES ('Bebidas Energeticas', '257399892', '2', 'Tecnovending');
+INSERT INTO responsavel_por VALUES ('Snacks', '257399892', '3', 'Activeblue');
+INSERT INTO responsavel_por VALUES ('Bebidas Zero', '257399823', '4', 'Activeblue');
  
 ---- Evento de Reposicao ---- 
-INSERT INTO evento_reposicao VALUES ('7499448750431', '1', '1', 'Walmart Inc.', '2005-12-21 21:35:14', '43', '257399892');
-INSERT INTO evento_reposicao VALUES ('8601139975576', '2', '2', 'Amazon.com Inc.', '2005-12-21 21:35:14', '43', '257399823');
-INSERT INTO evento_reposicao VALUES ('4040298751684', '3', '3', 'Walmart Inc.', '2005-12-21 21:35:14', '43', '257399892');
-INSERT INTO evento_reposicao VALUES ('6466097307924', '4', '4', 'Amazon.com Inc.', '2005-12-21 21:35:14', '43', '257399823');
-INSERT INTO evento_reposicao VALUES ('3274673078338', '5', '1', 'Walmart Inc.', '2005-12-21 21:35:14', '43', '257399892');
-INSERT INTO evento_reposicao VALUES ('8042081738117', '6', '2', 'Amazon.com Inc.', '2005-12-21 21:35:14', '43', '257399823');
-INSERT INTO evento_reposicao VALUES ('2662602572197', '7', '3', 'Walmart Inc.', '2005-12-21 21:35:14', '43', '257399892');
-INSERT INTO evento_reposicao VALUES ('4832423897296', '8', '4', 'Amazon.com Inc.', '2005-12-21 21:35:14', '43', '257399823');
-INSERT INTO evento_reposicao VALUES ('7499448750431', '1', '1', 'Walmart Inc.', '2011-06-22 00:49:08', '23', '257399892');
-INSERT INTO evento_reposicao VALUES ('8601139975576', '2', '2', 'Amazon.com Inc.', '2011-06-22 00:49:08', '23', '257399823');
-INSERT INTO evento_reposicao VALUES ('4040298751684', '3', '3', 'Walmart Inc.', '2011-06-22 00:49:08', '23', '257399892');
-INSERT INTO evento_reposicao VALUES ('6466097307924', '4', '4', 'Amazon.com Inc.', '2011-06-22 00:49:08', '23', '257399823');
-INSERT INTO evento_reposicao VALUES ('3274673078338', '5', '1', 'Walmart Inc.', '2011-06-22 00:49:08', '23', '257399892');
-INSERT INTO evento_reposicao VALUES ('8042081738117', '6', '2', 'Amazon.com Inc.', '2011-06-22 00:49:08', '23', '257399823');
-INSERT INTO evento_reposicao VALUES ('2662602572197', '7', '3', 'Walmart Inc.', '2011-06-22 00:49:08', '23', '257399892');
-INSERT INTO evento_reposicao VALUES ('4832423897296', '8', '4', 'Amazon.com Inc.', '2011-06-22 00:49:08', '23', '257399823');
-INSERT INTO evento_reposicao VALUES ('7499448750431', '1', '1', 'Walmart Inc.', '2004-04-17 04:56:05', '42', '257399892');
-INSERT INTO evento_reposicao VALUES ('8601139975576', '2', '2', 'Amazon.com Inc.', '2004-04-17 04:56:05', '42', '257399823');
-INSERT INTO evento_reposicao VALUES ('4040298751684', '3', '3', 'Walmart Inc.', '2004-04-17 04:56:05', '42', '257399892');
-INSERT INTO evento_reposicao VALUES ('6466097307924', '4', '4', 'Amazon.com Inc.', '2004-04-17 04:56:05', '42', '257399823');
-INSERT INTO evento_reposicao VALUES ('3274673078338', '5', '1', 'Walmart Inc.', '2004-04-17 04:56:05', '42', '257399892');
-INSERT INTO evento_reposicao VALUES ('8042081738117', '6', '2', 'Amazon.com Inc.', '2004-04-17 04:56:05', '42', '257399823');
-INSERT INTO evento_reposicao VALUES ('2662602572197', '7', '3', 'Walmart Inc.', '2004-04-17 04:56:05', '42', '257399892');
-INSERT INTO evento_reposicao VALUES ('4832423897296', '8', '4', 'Amazon.com Inc.', '2004-04-17 04:56:05', '42', '257399823');
-INSERT INTO evento_reposicao VALUES ('7499448750431', '1', '1', 'Walmart Inc.', '2008-10-14 20:56:26', '6', '257399892');
-INSERT INTO evento_reposicao VALUES ('8601139975576', '2', '2', 'Amazon.com Inc.', '2008-10-14 20:56:26', '6', '257399823');
-INSERT INTO evento_reposicao VALUES ('4040298751684', '3', '3', 'Walmart Inc.', '2008-10-14 20:56:26', '6', '257399892');
-INSERT INTO evento_reposicao VALUES ('6466097307924', '4', '4', 'Amazon.com Inc.', '2008-10-14 20:56:26', '6', '257399823');
-INSERT INTO evento_reposicao VALUES ('3274673078338', '5', '1', 'Walmart Inc.', '2008-10-14 20:56:26', '6', '257399892');
-INSERT INTO evento_reposicao VALUES ('8042081738117', '6', '2', 'Amazon.com Inc.', '2008-10-14 20:56:26', '6', '257399823');
-INSERT INTO evento_reposicao VALUES ('2662602572197', '7', '3', 'Walmart Inc.', '2008-10-14 20:56:26', '6', '257399892');
-INSERT INTO evento_reposicao VALUES ('4832423897296', '8', '4', 'Amazon.com Inc.', '2008-10-14 20:56:26', '6', '257399823');
-INSERT INTO evento_reposicao VALUES ('7499448750431', '1', '1', 'Walmart Inc.', '2012-07-22 14:26:25', '28', '257399892');
-INSERT INTO evento_reposicao VALUES ('8601139975576', '2', '2', 'Amazon.com Inc.', '2012-07-22 14:26:25', '28', '257399823');
-INSERT INTO evento_reposicao VALUES ('4040298751684', '3', '3', 'Walmart Inc.', '2012-07-22 14:26:25', '28', '257399892');
-INSERT INTO evento_reposicao VALUES ('6466097307924', '4', '4', 'Amazon.com Inc.', '2012-07-22 14:26:25', '28', '257399823');
-INSERT INTO evento_reposicao VALUES ('3274673078338', '5', '1', 'Walmart Inc.', '2012-07-22 14:26:25', '28', '257399892');
-INSERT INTO evento_reposicao VALUES ('8042081738117', '6', '2', 'Amazon.com Inc.', '2012-07-22 14:26:25', '28', '257399823');
-INSERT INTO evento_reposicao VALUES ('2662602572197', '7', '3', 'Walmart Inc.', '2012-07-22 14:26:25', '28', '257399892');
-INSERT INTO evento_reposicao VALUES ('4832423897296', '8', '4', 'Amazon.com Inc.', '2012-07-22 14:26:25', '28', '257399823');
-INSERT INTO evento_reposicao VALUES ('7499448750431', '1', '1', 'Walmart Inc.', '2020-12-08 02:04:03', '34', '257399892');
-INSERT INTO evento_reposicao VALUES ('8601139975576', '2', '2', 'Amazon.com Inc.', '2020-12-08 02:04:03', '34', '257399823');
-INSERT INTO evento_reposicao VALUES ('4040298751684', '3', '3', 'Walmart Inc.', '2020-12-08 02:04:03', '34', '257399892');
-INSERT INTO evento_reposicao VALUES ('6466097307924', '4', '4', 'Amazon.com Inc.', '2020-12-08 02:04:03', '34', '257399823');
-INSERT INTO evento_reposicao VALUES ('3274673078338', '5', '1', 'Walmart Inc.', '2020-12-08 02:04:03', '34', '257399892');
-INSERT INTO evento_reposicao VALUES ('8042081738117', '6', '2', 'Amazon.com Inc.', '2020-12-08 02:04:03', '34', '257399823');
-INSERT INTO evento_reposicao VALUES ('2662602572197', '7', '3', 'Walmart Inc.', '2020-12-08 02:04:03', '34', '257399892');
-INSERT INTO evento_reposicao VALUES ('4832423897296', '8', '4', 'Amazon.com Inc.', '2020-12-08 02:04:03', '34', '257399823');
-INSERT INTO evento_reposicao VALUES ('7499448750431', '1', '1', 'Walmart Inc.', '2008-11-06 22:51:13', '21', '257399892');
-INSERT INTO evento_reposicao VALUES ('8601139975576', '2', '2', 'Amazon.com Inc.', '2008-11-06 22:51:13', '21', '257399823');
-INSERT INTO evento_reposicao VALUES ('4040298751684', '3', '3', 'Walmart Inc.', '2008-11-06 22:51:13', '21', '257399892');
-INSERT INTO evento_reposicao VALUES ('6466097307924', '4', '4', 'Amazon.com Inc.', '2008-11-06 22:51:13', '21', '257399823');
-INSERT INTO evento_reposicao VALUES ('3274673078338', '5', '1', 'Walmart Inc.', '2008-11-06 22:51:13', '21', '257399892');
-INSERT INTO evento_reposicao VALUES ('8042081738117', '6', '2', 'Amazon.com Inc.', '2008-11-06 22:51:13', '21', '257399823');
-INSERT INTO evento_reposicao VALUES ('2662602572197', '7', '3', 'Walmart Inc.', '2008-11-06 22:51:13', '21', '257399892');
-INSERT INTO evento_reposicao VALUES ('4832423897296', '8', '4', 'Amazon.com Inc.', '2008-11-06 22:51:13', '21', '257399823');
-INSERT INTO evento_reposicao VALUES ('7499448750431', '1', '1', 'Walmart Inc.', '2020-11-19 11:22:06', '44', '257399892');
-INSERT INTO evento_reposicao VALUES ('8601139975576', '2', '2', 'Amazon.com Inc.', '2020-11-19 11:22:06', '44', '257399823');
-INSERT INTO evento_reposicao VALUES ('4040298751684', '3', '3', 'Walmart Inc.', '2020-11-19 11:22:06', '44', '257399892');
-INSERT INTO evento_reposicao VALUES ('6466097307924', '4', '4', 'Amazon.com Inc.', '2020-11-19 11:22:06', '44', '257399823');
-INSERT INTO evento_reposicao VALUES ('3274673078338', '5', '1', 'Walmart Inc.', '2020-11-19 11:22:06', '44', '257399892');
-INSERT INTO evento_reposicao VALUES ('8042081738117', '6', '2', 'Amazon.com Inc.', '2020-11-19 11:22:06', '44', '257399823');
-INSERT INTO evento_reposicao VALUES ('2662602572197', '7', '3', 'Walmart Inc.', '2020-11-19 11:22:06', '44', '257399892');
-INSERT INTO evento_reposicao VALUES ('4832423897296', '8', '4', 'Amazon.com Inc.', '2020-11-19 11:22:06', '44', '257399823');
-INSERT INTO evento_reposicao VALUES ('7499448750431', '1', '1', 'Walmart Inc.', '2020-11-17 00:05:11', '10', '257399892');
-INSERT INTO evento_reposicao VALUES ('8601139975576', '2', '2', 'Amazon.com Inc.', '2020-11-17 00:05:11', '10', '257399823');
-INSERT INTO evento_reposicao VALUES ('4040298751684', '3', '3', 'Walmart Inc.', '2020-11-17 00:05:11', '10', '257399892');
-INSERT INTO evento_reposicao VALUES ('6466097307924', '4', '4', 'Amazon.com Inc.', '2020-11-17 00:05:11', '10', '257399823');
-INSERT INTO evento_reposicao VALUES ('3274673078338', '5', '1', 'Walmart Inc.', '2020-11-17 00:05:11', '10', '257399892');
-INSERT INTO evento_reposicao VALUES ('8042081738117', '6', '2', 'Amazon.com Inc.', '2020-11-17 00:05:11', '10', '257399823');
-INSERT INTO evento_reposicao VALUES ('2662602572197', '7', '3', 'Walmart Inc.', '2020-11-17 00:05:11', '10', '257399892');
-INSERT INTO evento_reposicao VALUES ('4832423897296', '8', '4', 'Amazon.com Inc.', '2020-11-17 00:05:11', '10', '257399823');
-INSERT INTO evento_reposicao VALUES ('7499448750431', '1', '1', 'Walmart Inc.', '2010-05-28 06:02:49', '8', '257399892');
-INSERT INTO evento_reposicao VALUES ('8601139975576', '2', '2', 'Amazon.com Inc.', '2010-05-28 06:02:49', '8', '257399823');
-INSERT INTO evento_reposicao VALUES ('4040298751684', '3', '3', 'Walmart Inc.', '2010-05-28 06:02:49', '8', '257399892');
-INSERT INTO evento_reposicao VALUES ('6466097307924', '4', '4', 'Amazon.com Inc.', '2010-05-28 06:02:49', '8', '257399823');
-INSERT INTO evento_reposicao VALUES ('3274673078338', '5', '1', 'Walmart Inc.', '2010-05-28 06:02:49', '8', '257399892');
-INSERT INTO evento_reposicao VALUES ('8042081738117', '6', '2', 'Amazon.com Inc.', '2010-05-28 06:02:49', '8', '257399823');
-INSERT INTO evento_reposicao VALUES ('2662602572197', '7', '3', 'Walmart Inc.', '2010-05-28 06:02:49', '8', '257399892');
-INSERT INTO evento_reposicao VALUES ('4832423897296', '8', '4', 'Amazon.com Inc.', '2010-05-28 06:02:49', '8', '257399823');
+INSERT INTO evento_reposicao VALUES ('2662602572197', '1', '1', 'Tecnovending', '2005-12-21 21:35:14', '43', '257399892');
+INSERT INTO evento_reposicao VALUES ('2662602572197', '1', '1', 'Tecnovending', '2004-04-17 04:56:05', '42', '257399892');
+INSERT INTO evento_reposicao VALUES ('7499448750431', '2', '2', 'Tecnovending', '2004-04-17 04:56:05', '42', '257399892');
+INSERT INTO evento_reposicao VALUES ('7499448750431', '2', '2', 'Tecnovending', '2003-05-01 04:56:05', '13', '257399892');
+INSERT INTO evento_reposicao VALUES ('4040298751684', '3', '3', 'Activeblue', '2012-07-22 14:26:25', '28', '257399892');
+INSERT INTO evento_reposicao VALUES ('4832423897296', '4', '4', 'Activeblue', '2012-07-22 14:26:25', '28', '257399892');
+INSERT INTO evento_reposicao VALUES ('4832423897296', '4', '4', 'Activeblue', '2020-11-19 11:22:06', '44', '257399892');
+INSERT INTO evento_reposicao VALUES ('3274673078338', '6', '2', 'Tecnovending', '2020-11-19 11:22:06', '44', '257399892');
+INSERT INTO evento_reposicao VALUES ('3274673078338', '6', '2', 'Tecnovending', '2020-11-17 00:05:11', '10', '257399892');
+INSERT INTO evento_reposicao VALUES ('8601139975576', '7', '3', 'Activeblue', '2020-11-19 11:22:06', '44', '257399892');
+INSERT INTO evento_reposicao VALUES ('6466097307924', '8', '4', 'Activeblue', '2020-11-19 11:22:06', '12', '257399823');
+INSERT INTO evento_reposicao VALUES ('6466097307924', '8', '4', 'Activeblue', '2020-12-08 02:04:03', '3', '257399823');
