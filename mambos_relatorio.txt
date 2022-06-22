@@ -3,4 +3,4 @@ ponto de retalho: no instalada_em, o local é o nome de ponto de retalho dado qu
 falar dos atributos not null
 
 ## OLAP
-    - 2 querie: optamos por ocultar a coluna do distrito (i.e Lisboa) por uma questao de consistencia, nao faria sentido apresentar essa coluna quando ja sabemos qual é o distrito à partida
+    - 2 query: optamos por ocultar a coluna do distrito (i.e Lisboa) por uma questao de consistencia, nao faria sentido apresentar essa coluna quando ja sabemos qual é o distrito à partida
