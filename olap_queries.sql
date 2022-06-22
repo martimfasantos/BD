@@ -2,10 +2,8 @@
 
 SELECT dia_semana, concelho, SUM(unidades) AS total_vendidos
 FROM vendas
-WHERE
-    '11/10/2005' < CONCAT( CAST(dia_mes AS VARCHAR), '/', CAST(mes AS VARCHAR), '/', CAST(ano AS VARCHAR) )
-    AND
-    CONCAT( CAST(dia_mes AS VARCHAR), '/', CAST(mes AS VARCHAR), '/', CAST(ano AS VARCHAR) ) < '21/07/2021'
+WHERE CONCAT( CAST(ano AS VARCHAR), '-', CAST(mes AS VARCHAR), '-', CAST(dia_mes AS VARCHAR) )
+    BETWEEN '2006-12-25' AND '2021-07-21'
 GROUP BY
 	GROUPING SETS ( (dia_semana), (concelho), () );
 

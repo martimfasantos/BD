@@ -40,15 +40,15 @@ CREATE TABLE tem_outra (
 );
 
 CREATE TABLE produto (
-    ean CHAR(13)        NOT NULL,
-    nome_cat VARCHAR(50)     NOT NULL,
-    descr VARCHAR(200),
+    ean         CHAR(13)        NOT NULL,
+    nome_cat    VARCHAR(50)     NOT NULL,
+    descr       VARCHAR(200),
     PRIMARY KEY (ean),
     FOREIGN KEY (nome_cat) REFERENCES categoria(nome_cat)
 );
     
 CREATE TABLE tem_categoria (
-    ean     CHAR(13)       NOT NULL,
+    ean         CHAR(13)       NOT NULL,
     nome_cat    VARCHAR(50)    NOT NULL, 
     PRIMARY KEY (ean, nome_cat),
     FOREIGN KEY (ean) REFERENCES produto(ean),
@@ -62,19 +62,19 @@ CREATE TABLE IVM (
 );
 
 CREATE TABLE ponto_de_retalho (
-    nome_pr        VARCHAR(50) NOT NULL,
+    nome_pr     VARCHAR(50) NOT NULL,
     distrito    VARCHAR(50) NOT NULL,
     concelho    VARCHAR(50) NOT NULL,
-    PRIMARY KEY(nome_pr)
+    PRIMARY KEY (nome_pr)
 );
 
 CREATE TABLE instalada_em (
     num_serie   SERIAL      NOT NULL,
     fabricante  VARCHAR(50) NOT NULL,
-    local       VARCHAR(50) NOT NULL,
+    nome_pr     VARCHAR(50) NOT NULL,
     PRIMARY KEY (num_serie, fabricante),
     FOREIGN KEY (num_serie, fabricante) REFERENCES IVM(num_serie, fabricante),
-    FOREIGN KEY (local) REFERENCES ponto_de_retalho(nome_pr)
+    FOREIGN KEY (nome_pr) REFERENCES ponto_de_retalho(nome_pr)
 );
 
 CREATE TABLE prateleira (
@@ -82,7 +82,7 @@ CREATE TABLE prateleira (
     num_serie   SERIAL      NOT NULL,
     fabricante  VARCHAR(50) NOT NULL,
     altura      FLOAT,
-    nome_cat        VARCHAR(50) NOT NULL,
+    nome_cat    VARCHAR(50) NOT NULL,
     PRIMARY KEY (nro, num_serie, fabricante),
     FOREIGN KEY (num_serie, fabricante) REFERENCES IVM(num_serie, fabricante),
     FOREIGN KEY (nome_cat) REFERENCES categoria(nome_cat)
@@ -94,8 +94,8 @@ CREATE TABLE planograma (
     num_serie   SERIAL      NOT NULL,
     fabricante  VARCHAR(50) NOT NULL,
     faces       INTEGER,
-    unidades    INTEGER,
-    loc VARCHAR(50),
+    unidades    INTEGER     NOT NULL,
+    loc         VARCHAR(50),
     PRIMARY KEY (ean, nro, num_serie, fabricante),
     FOREIGN KEY (ean) REFERENCES produto(ean),
     FOREIGN KEY (nro, num_serie, fabricante) REFERENCES prateleira(nro, num_serie, fabricante)
@@ -105,7 +105,7 @@ CREATE TABLE retalhista (
     tin         CHAR(9)     NOT NULL,
     nome_ret    VARCHAR(50) NOT NULL,
     PRIMARY KEY (tin),
-    UNIQUE(nome_ret)    -- RI-RE7 --
+    UNIQUE (nome_ret)    -- RI-RE7 --
 );
 
 CREATE TABLE responsavel_por (
@@ -124,8 +124,8 @@ CREATE TABLE evento_reposicao (
     nro         INTEGER     NOT NULL,
     num_serie   SERIAL      NOT NULL,
     fabricante  VARCHAR(50) NOT NULL,
-    instante    TIMESTAMP,
-    unidades    INTEGER,
+    instante    TIMESTAMP   NOT NULL,
+    unidades    INTEGER     NOT NULL,
     tin         CHAR(9)     NOT NULL,
     PRIMARY KEY (ean, nro, num_serie, fabricante, instante),
     FOREIGN KEY (ean, nro, num_serie, fabricante) REFERENCES planograma(ean, nro, num_serie, fabricante),
