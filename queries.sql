@@ -3,9 +3,9 @@
 --          reposição do maior número de categorias?            --
 ------------------------------------------------------------------
 
-SELECT nome
-FROM responsavel_por NATURAL JOIN retalhista
-GROUP BY nome 
+SELECT nome_ret
+FROM retalhista NATURAL JOIN responsavel_por
+GROUP BY nome_ret 
 HAVING COUNT(DISTINCT nome_cat) >= ALL ( 
         SELECT COUNT(DISTINCT nome_cat) 
         FROM responsavel_por
@@ -18,14 +18,11 @@ HAVING COUNT(DISTINCT nome_cat) >= ALL (
 --               todas as categorias simples?                 --
 ----------------------------------------------------------------
 
-SELECT nome
+SELECT nome_ret
 FROM retalhista  
-NATURAL JOIN (
-        SELECT * FROM responsavel_por 
-        WHERE nome_cat IN (
-                SELECT nome 
-                FROM categoria_simples)) AS C
-GROUP BY nome
+        NATURAL JOIN responsavel_por 
+        NATURAL JOIN categoria_simples
+GROUP BY nome_ret
 HAVING COUNT(DISTINCT nome_cat) = ( 
         SELECT COUNT(*) 
         FROM categoria_simples );

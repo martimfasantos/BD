@@ -23,7 +23,7 @@ FOR EACH ROW EXECUTE PROCEDURE nao_contem();
 
 
 -----------------------------------------------------------------------------
--- (RI-4) O número de unidades repostas num Evento de Reposição 
+-- (RI-4) O número de unidades repostas num Evento de Reposição            -- 
 --        não pode exceder o número de unidades especificado no Planograma --
 -----------------------------------------------------------------------------
 
@@ -52,7 +52,7 @@ FOR EACH ROW EXECUTE PROCEDURE nao_excede();
 
 
 --------------------------------------------------------------------
--- (RI-5) Um Produto só pode ser reposto numa Prateleira que 
+-- (RI-5) Um Produto só pode ser reposto numa Prateleira que      --
 --        apresente (pelo menos) uma das Categorias desse produto --
 --------------------------------------------------------------------
 

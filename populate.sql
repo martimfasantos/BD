@@ -14,45 +14,45 @@ DROP TABLE IF EXISTS categoria_simples;
 DROP TABLE IF EXISTS categoria;
 
 CREATE TABLE categoria (
-    nome    VARCHAR(50) NOT NULL,
-    PRIMARY KEY (nome)
+    nome_cat    VARCHAR(50) NOT NULL,
+    PRIMARY KEY (nome_cat)
 );
 
 CREATE TABLE categoria_simples (
-    nome    VARCHAR(50) NOT NULL,
-    PRIMARY KEY (nome),
-    FOREIGN KEY (nome) REFERENCES categoria(nome)
+    nome_cat    VARCHAR(50) NOT NULL,
+    PRIMARY KEY (nome_cat),
+    FOREIGN KEY (nome_cat) REFERENCES categoria(nome_cat)
 );
 
 CREATE TABLE super_categoria (
-    nome    VARCHAR(50) NOT NULL,
-    PRIMARY KEY (nome),
-    FOREIGN KEY (nome) REFERENCES categoria(nome)
+    nome_cat    VARCHAR(50) NOT NULL,
+    PRIMARY KEY (nome_cat),
+    FOREIGN KEY (nome_cat) REFERENCES categoria(nome_cat)
 );
 
 CREATE TABLE tem_outra (
     super_categoria     VARCHAR(50) NOT NULL,
     categoria           VARCHAR(50) NOT NULL,
     PRIMARY KEY (categoria),
-    FOREIGN KEY (super_categoria) REFERENCES super_categoria(nome),
-    FOREIGN KEY (categoria) REFERENCES categoria(nome),
+    FOREIGN KEY (super_categoria) REFERENCES super_categoria(nome_cat),
+    FOREIGN KEY (categoria) REFERENCES categoria(nome_cat),
     CONSTRAINT CHK_category CHECK (super_categoria != categoria) -- RI-RE5 --
 );
 
 CREATE TABLE produto (
     ean CHAR(13)        NOT NULL,
-    cat VARCHAR(50)     NOT NULL, 
+    nome_cat VARCHAR(50)     NOT NULL,
     descr VARCHAR(200),
     PRIMARY KEY (ean),
-    FOREIGN KEY (cat) REFERENCES categoria(nome)
+    FOREIGN KEY (nome_cat) REFERENCES categoria(nome_cat)
 );
     
 CREATE TABLE tem_categoria (
     ean     CHAR(13)       NOT NULL,
-    nome    VARCHAR(50)    NOT NULL, 
-    PRIMARY KEY (ean, nome),
+    nome_cat    VARCHAR(50)    NOT NULL, 
+    PRIMARY KEY (ean, nome_cat),
     FOREIGN KEY (ean) REFERENCES produto(ean),
-    FOREIGN KEY (nome) REFERENCES categoria(nome)
+    FOREIGN KEY (nome_cat) REFERENCES categoria(nome_cat)
 );
 
 CREATE TABLE IVM (
@@ -62,10 +62,10 @@ CREATE TABLE IVM (
 );
 
 CREATE TABLE ponto_de_retalho (
-    nome        VARCHAR(50) NOT NULL,
+    nome_pr        VARCHAR(50) NOT NULL,
     distrito    VARCHAR(50) NOT NULL,
     concelho    VARCHAR(50) NOT NULL,
-    PRIMARY KEY(nome)
+    PRIMARY KEY(nome_pr)
 );
 
 CREATE TABLE instalada_em (
@@ -74,7 +74,7 @@ CREATE TABLE instalada_em (
     local       VARCHAR(50) NOT NULL,
     PRIMARY KEY (num_serie, fabricante),
     FOREIGN KEY (num_serie, fabricante) REFERENCES IVM(num_serie, fabricante),
-    FOREIGN KEY (local) REFERENCES ponto_de_retalho(nome)
+    FOREIGN KEY (local) REFERENCES ponto_de_retalho(nome_pr)
 );
 
 CREATE TABLE prateleira (
@@ -82,10 +82,10 @@ CREATE TABLE prateleira (
     num_serie   SERIAL      NOT NULL,
     fabricante  VARCHAR(50) NOT NULL,
     altura      FLOAT,
-    nome        VARCHAR(50) NOT NULL,
+    nome_cat        VARCHAR(50) NOT NULL,
     PRIMARY KEY (nro, num_serie, fabricante),
     FOREIGN KEY (num_serie, fabricante) REFERENCES IVM(num_serie, fabricante),
-    FOREIGN KEY (nome) REFERENCES categoria(nome)
+    FOREIGN KEY (nome_cat) REFERENCES categoria(nome_cat)
 );
 
 CREATE TABLE planograma (
@@ -102,10 +102,10 @@ CREATE TABLE planograma (
 );
 
 CREATE TABLE retalhista (
-    tin     CHAR(9)     NOT NULL,
-    nome    VARCHAR(50) NOT NULL,
+    tin         CHAR(9)     NOT NULL,
+    nome_ret    VARCHAR(50) NOT NULL,
     PRIMARY KEY (tin),
-    UNIQUE(nome)    -- RI-RE7 --
+    UNIQUE(nome_ret)    -- RI-RE7 --
 );
 
 CREATE TABLE responsavel_por (
@@ -116,7 +116,7 @@ CREATE TABLE responsavel_por (
     PRIMARY KEY (num_serie, fabricante),
     FOREIGN KEY (num_serie, fabricante) REFERENCES IVM(num_serie, fabricante),
     FOREIGN KEY (tin) REFERENCES retalhista(tin),
-    FOREIGN KEY (nome_cat) REFERENCES categoria(nome)
+    FOREIGN KEY (nome_cat) REFERENCES categoria(nome_cat)
 );
 
 CREATE TABLE evento_reposicao (
