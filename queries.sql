@@ -19,8 +19,13 @@ HAVING COUNT(DISTINCT nome_cat) >= ALL (
 ----------------------------------------------------------------
 
 SELECT nome
-FROM responsavel_por NATURAL JOIN retalhista
-GROUP BY nome 
+FROM retalhista  
+NATURAL JOIN (
+        SELECT * FROM responsavel_por 
+        WHERE nome_cat IN (
+                SELECT nome 
+                FROM categoria_simples)) AS C
+GROUP BY nome
 HAVING COUNT(DISTINCT nome_cat) = ( 
         SELECT COUNT(*) 
         FROM categoria_simples );

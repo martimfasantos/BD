@@ -14,81 +14,87 @@ DROP TABLE IF EXISTS categoria_simples;
 DROP TABLE IF EXISTS categoria;
 
 CREATE TABLE categoria (
-    nome VARCHAR(50) PRIMARY KEY
+    nome    VARCHAR(50) NOT NULL,
+    PRIMARY KEY (nome)
 );
 
 CREATE TABLE categoria_simples (
-    nome VARCHAR(50) PRIMARY KEY,
+    nome    VARCHAR(50) NOT NULL,
+    PRIMARY KEY (nome),
     FOREIGN KEY (nome) REFERENCES categoria(nome)
 );
 
 CREATE TABLE super_categoria (
-    nome VARCHAR(50) PRIMARY KEY,
+    nome    VARCHAR(50) NOT NULL,
+    PRIMARY KEY (nome),
     FOREIGN KEY (nome) REFERENCES categoria(nome)
 );
 
 CREATE TABLE tem_outra (
-    super_categoria VARCHAR(50) NOT NULL,
-    categoria VARCHAR(50) PRIMARY KEY,
+    super_categoria     VARCHAR(50) NOT NULL,
+    categoria           VARCHAR(50) NOT NULL,
+    PRIMARY KEY (categoria),
     FOREIGN KEY (super_categoria) REFERENCES super_categoria(nome),
     FOREIGN KEY (categoria) REFERENCES categoria(nome),
     CONSTRAINT CHK_category CHECK (super_categoria != categoria) -- RI-RE5 --
 );
 
 CREATE TABLE produto (
-    ean CHAR(13) PRIMARY KEY,
-    cat VARCHAR(50) NOT NULL, 
+    ean CHAR(13)        NOT NULL,
+    cat VARCHAR(50)     NOT NULL, 
     descr VARCHAR(200),
+    PRIMARY KEY (ean),
     FOREIGN KEY (cat) REFERENCES categoria(nome)
 );
     
 CREATE TABLE tem_categoria (
-    ean CHAR(13) NOT NULL,
-    nome VARCHAR(50) NOT NULL, 
+    ean     CHAR(13)       NOT NULL,
+    nome    VARCHAR(50)    NOT NULL, 
     PRIMARY KEY (ean, nome),
     FOREIGN KEY (ean) REFERENCES produto(ean),
     FOREIGN KEY (nome) REFERENCES categoria(nome)
 );
 
 CREATE TABLE IVM (
-    num_serie SERIAL NOT NULL,
-    fabricante VARCHAR(50) NOT NULL, 
+    num_serie       SERIAL      NOT NULL,
+    fabricante      VARCHAR(50) NOT NULL, 
     PRIMARY KEY (num_serie, fabricante)
 );
 
 CREATE TABLE ponto_de_retalho (
-    nome VARCHAR(50) PRIMARY KEY,
-    distrito VARCHAR(50) NOT NULL,
-    concelho VARCHAR(50) NOT NULL
+    nome        VARCHAR(50) NOT NULL,
+    distrito    VARCHAR(50) NOT NULL,
+    concelho    VARCHAR(50) NOT NULL,
+    PRIMARY KEY(nome)
 );
 
 CREATE TABLE instalada_em (
-    num_serie SERIAL NOT NULL,
-    fabricante VARCHAR(50) NOT NULL,
-    local VARCHAR(50) NOT NULL,
+    num_serie   SERIAL      NOT NULL,
+    fabricante  VARCHAR(50) NOT NULL,
+    local       VARCHAR(50) NOT NULL,
     PRIMARY KEY (num_serie, fabricante),
     FOREIGN KEY (num_serie, fabricante) REFERENCES IVM(num_serie, fabricante),
     FOREIGN KEY (local) REFERENCES ponto_de_retalho(nome)
 );
 
 CREATE TABLE prateleira (
-    nro INTEGER NOT NULL,
-    num_serie SERIAL NOT NULL,
-    fabricante VARCHAR(50) NOT NULL,
-    altura FLOAT,
-    nome VARCHAR(50) NOT NULL,
+    nro         INTEGER     NOT NULL,
+    num_serie   SERIAL      NOT NULL,
+    fabricante  VARCHAR(50) NOT NULL,
+    altura      FLOAT,
+    nome        VARCHAR(50) NOT NULL,
     PRIMARY KEY (nro, num_serie, fabricante),
     FOREIGN KEY (num_serie, fabricante) REFERENCES IVM(num_serie, fabricante),
     FOREIGN KEY (nome) REFERENCES categoria(nome)
 );
 
 CREATE TABLE planograma (
-    ean CHAR(13) NOT NULL,
-    nro INTEGER NOT NULL,
-    num_serie SERIAL NOT NULL,
-    fabricante VARCHAR(50) NOT NULL,
-    faces INTEGER,
-    unidades INTEGER,
+    ean         CHAR(13)    NOT NULL,
+    nro         INTEGER     NOT NULL,
+    num_serie   SERIAL      NOT NULL,
+    fabricante  VARCHAR(50) NOT NULL,
+    faces       INTEGER,
+    unidades    INTEGER,
     loc VARCHAR(50),
     PRIMARY KEY (ean, nro, num_serie, fabricante),
     FOREIGN KEY (ean) REFERENCES produto(ean),
@@ -96,16 +102,17 @@ CREATE TABLE planograma (
 );
 
 CREATE TABLE retalhista (
-    tin CHAR(9) PRIMARY KEY,
-    nome VARCHAR(50) NOT NULL,
+    tin     CHAR(9)     NOT NULL,
+    nome    VARCHAR(50) NOT NULL,
+    PRIMARY KEY (tin),
     UNIQUE(nome)    -- RI-RE7 --
 );
 
 CREATE TABLE responsavel_por (
-    nome_cat VARCHAR(50) NOT NULL,
-    tin CHAR(9) NOT NULL,
-    num_serie SERIAL NOT NULL,
-    fabricante VARCHAR(50) NOT NULL,
+    nome_cat    VARCHAR(50) NOT NULL,
+    tin         CHAR(9)     NOT NULL,
+    num_serie   SERIAL      NOT NULL,
+    fabricante  VARCHAR(50) NOT NULL,
     PRIMARY KEY (num_serie, fabricante),
     FOREIGN KEY (num_serie, fabricante) REFERENCES IVM(num_serie, fabricante),
     FOREIGN KEY (tin) REFERENCES retalhista(tin),
@@ -113,13 +120,13 @@ CREATE TABLE responsavel_por (
 );
 
 CREATE TABLE evento_reposicao (
-    ean CHAR(13) NOT NULL,
-    nro INTEGER NOT NULL,
-    num_serie SERIAL NOT NULL,
-    fabricante VARCHAR(50) NOT NULL,
-    instante TIMESTAMP,
-    unidades INTEGER,
-    tin CHAR(9) NOT NULL,
+    ean         CHAR(13)    NOT NULL,
+    nro         INTEGER     NOT NULL,
+    num_serie   SERIAL      NOT NULL,
+    fabricante  VARCHAR(50) NOT NULL,
+    instante    TIMESTAMP,
+    unidades    INTEGER,
+    tin         CHAR(9)     NOT NULL,
     PRIMARY KEY (ean, nro, num_serie, fabricante, instante),
     FOREIGN KEY (ean, nro, num_serie, fabricante) REFERENCES planograma(ean, nro, num_serie, fabricante),
     FOREIGN KEY (tin) REFERENCES retalhista(tin)
