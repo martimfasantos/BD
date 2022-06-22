@@ -4,13 +4,11 @@ from flask import Flask, render_template, request, url_for, redirect
 
 app = Flask(__name__)
 
-def get_db_connection():
-    conn = psycopg2.connect(host='db.tecnico.ulisboa.pt',
-                            database='ist196915',  # para testar mudar para a database que queremos
-                            user=os.environ['DB_USERNAME'],
-                            password=os.environ['DB_PASSWORD'])
-                            # no terminal fazer export destas variaveis
-    return conn
+DB_HOST = "db.tecnico.ulisboa.pt"
+DB_USER = "ist196915"
+DB_DATABASE = DB_USER
+DB_PASSWORD = "bdpassword"
+DB_CONNECTION_STRING = "host=%s dbname=%s user=%s password=%s" % (DB_HOST, DB_DATABASE, DB_USER, DB_PASSWORD)
 
 
 @app.route('/')
@@ -28,99 +26,100 @@ def indexListar():
 @app.route('/criarCategoria/', methods=('GET', 'POST'))
 def criarCategoria():
     if request.method == 'POST':
-        nome = request.form['nome']
+        nome_cat = request.form['nome_cat']
 
-        conn = get_db_connection()
-        cur = conn.cursor()
+        dbConn = psycopg2.connect(DB_CONNECTION_STRING)
+        cur = dbConn.cursor()
         cur.execute('INSERT INTO categoria '
                     'VALUES (%s)',
-                    (nome,))
-        conn.commit()
+                    (nome_cat,))
+        dbConn.commit()
         cur.close()
-        conn.close()
-        return redirect(url_for('listarCategoria'))
+        dbConn.close()
+        return redirect('/listarCategoria')
 
     return render_template('criarCategoria.html')
 
 @app.route('/criarSuperCategoria/', methods=('GET', 'POST'))
 def criarSuperCategoria():
     if request.method == 'POST':
-        nome = request.form['nome']
+        nome_cat = request.form['nome_cat']
 
-        conn = get_db_connection()
-        cur = conn.cursor()
+        dbConn = psycopg2.connect(DB_CONNECTION_STRING)
+        cur = dbConn.cursor()
         cur.execute('INSERT INTO super_categoria '
                     'VALUES (%s)',
-                    (nome,))
-        conn.commit()
+                    (nome_cat,))
+        dbConn.commit()
         cur.close()
-        conn.close()
-        return redirect(url_for('listarSuperCategoria'))
+        dbConn.close()
+        return redirect('/listarSuperCategoria')
 
     return render_template('criarSuperCategoria.html')
 
 @app.route('/criarCategoriaSimples/', methods=('GET', 'POST'))
 def criarCategoriaSimples():
     if request.method == 'POST':
-        nome = request.form['nome']
+        nome_cat = request.form['nome_cat']
 
-        conn = get_db_connection()
-        cur = conn.cursor()
+        dbConn = psycopg2.connect(DB_CONNECTION_STRING)
+        cur = dbConn.cursor()
         cur.execute('INSERT INTO categoria_simples '
                     'VALUES (%s)',
-                    (nome,))
-        conn.commit()
+                    (nome_cat,))
+        dbConn.commit()
         cur.close()
-        conn.close()
-        return redirect(url_for('listarCategoriaSimples'))
+        dbConn.close()
+        return redirect('/listarCategoriaSimples')
 
     return render_template('criarCategoriaSimples.html')
 
 @app.route('/listarCategoria/')
 def listarCategoria():
-    conn = get_db_connection()
-    cur = conn.cursor()
+    dbConn = psycopg2.connect(DB_CONNECTION_STRING)
+    cur = dbConn.cursor()
     cur.execute('SELECT * FROM categoria;')
     categoria = cur.fetchall()
     cur.close()
-    conn.close()
+    dbConn.close()
     return render_template('listarCategoria.html', categoria=categoria)
 
 
 @app.route('/listarSuperCategoria/')
 def listarSuperCategoria():
-    conn = get_db_connection()
-    cur = conn.cursor()
+    dbConn = psycopg2.connect(DB_CONNECTION_STRING)
+    cur = dbConn.cursor()
     cur.execute('SELECT * FROM super_categoria;')
     superCategoria = cur.fetchall()
     cur.close()
-    conn.close()
+    dbConn.close()
     return render_template('listarSuperCategoria.html', superCategoria=superCategoria)
 
 @app.route('/listarCategoriaSimples/')
 def listarCategoriaSimples():
-    conn = get_db_connection()
-    cur = conn.cursor()
+    dbConn = psycopg2.connect(DB_CONNECTION_STRING)
+    cur = dbConn.cursor()
     cur.execute('SELECT * FROM categoria_simples;')
     categoriaSimples = cur.fetchall()
     cur.close()
-    conn.close()
+    dbConn.close()
     return render_template('listarCategoriaSimples.html', categoriaSimples=categoriaSimples)
 
 @app.route('/criarRetalhista/', methods=('GET', 'POST'))
 def criarRetalhista():
     if request.method == 'POST':
         tin = int(request.form['TIN'])
-        nome = request.form['nome']
-        conn = get_db_connection()
-        cur = conn.cursor()
+        nome_ret = request.form['nome_ret']
+        dbConn = psycopg2.connect(DB_CONNECTION_STRING)
+        cur = dbConn.cursor()
         cur.execute('INSERT INTO retalhista '
                     'VALUES (%s, %s)',
-                    (tin, nome))
-        conn.commit()
+                    (tin, nome_ret))
+        # perguntar se ele é responsavel_por alguma categoria numa ivm
+        dbConn.commit()
         cur.close()
-        conn.close()
-        return redirect(url_for('listarCategoriaSimples'))
+        dbConn.close()
+        return redirect('/listarCategoriaSimples')
 
     return render_template('criarRetalhista.html')
 
@@ -130,15 +129,15 @@ def listarIVMForm():
 
 @app.route('/listarEventoReposicaoporIVM', methods =["POST"])
 def listarEventoReposicaoporIVM():
-    conn = None
+    dbConn = None
     cursor = None
     try:
-        conn = get_db_connection()
-        cursor = conn.cursor()
-        query = "SELECT num_serie, fabricante, ean, nro, instante, unidades, nome " \
+        dbConn = psycopg2.connect(DB_CONNECTION_STRING)
+        cursor = dbConn.cursor()
+        query = "SELECT num_serie, fabricante, ean, nro, instante, unidades, nome_cat " \
                 "FROM evento_reposicao NATURAL JOIN prateleira" \
                 " WHERE num_serie = (%s)" \
-                "GROUP BY num_serie, fabricante, ean, nro, instante, nome;"
+                "GROUP BY num_serie, fabricante, ean, nro, instante, nome_cat;"
         data = (request.form["num_serie"],)
         cursor.execute(query, data)
         return render_template("listarEventoReposicaoporIVM.html", cursor=cursor)
@@ -146,7 +145,7 @@ def listarEventoReposicaoporIVM():
         return str(e) #Renders a page with the error.
     finally:
         cursor.close()
-        conn.close()
+        dbConn.close()
 
 @app.route('/listarSubCategoriasForm')
 def listarSubCategoriasForm():
@@ -154,12 +153,12 @@ def listarSubCategoriasForm():
 
 @app.route('/listarSubCategorias', methods =["POST"])
 def listarSubCategorias():
-    conn = None
+    dbConn = None
     cursor = None
     try:
-        conn = get_db_connection()
-        cursor = conn.cursor()
-        cursor = conn.cursor()
+        dbConn = psycopg2.connect(DB_CONNECTION_STRING)
+        cursor = dbConn.cursor()
+        cursor = dbConn.cursor()
         query = "SELECT categoria FROM " \
                 "tem_outra " \
                 "WHERE super_categoria = %s"
@@ -170,4 +169,4 @@ def listarSubCategorias():
         return str(e) #Renders a page with the error.
     finally:
         cursor.close()
-        conn.close()
+        dbConn.close()
