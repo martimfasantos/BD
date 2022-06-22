@@ -1,8 +1,14 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<a href="{{ url_for('listCategory') }}">List Category</a><br>
-<a href="{{ url_for('listSuperCategory') }}">List Super Category</a><br>
-<a href="{{ url_for('createCategory') }}">Create Category</a><br>
-<a href="{{ url_for('createSuperCategory') }}">Create Super Category</a><br>
+<a href="{{ url_for('criarCategoria') }}">Criar Categoria</a><br>
+<a href="{{ url_for('criarSuperCategoria') }}">Criar Super Categoria</a><br>
+<a href="{{ url_for('criarCategoriaSimples') }}">Criar Categoria Simples</a><br>
+<a href="{{ url_for('criarRetalhista') }}">Criar Retalhista</a><br>
+<a href="{{ url_for('listarCategoria') }}">Listar Categoria</a><br>
+<a href="{{ url_for('listarSuperCategoria') }}">Listar Super Categorias</a><br>
+<a href="{{ url_for('listarCategoriaSimples') }}">Listar Catgorias Simples</a><br>
+<a href="{{ url_for('listarSubCategoriasForm') }}"> Listar Subcategorias</a><br>
+<a href="{{ url_for('listarIVMForm') }}">Listar Eventos Reposição por IVM</a><br>
+
 {% endblock %}

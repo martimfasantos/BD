@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<html>
+<body>
+<h3>Listar eventos de reposição de uma IVM</h3>
+<form action="listarEventoReposicaoporIVM" method="post">
+    <p>NºSerie IVM: <input type="number" name="num_serie"/></p>
+    <p><input type="submit" value="Submeter"/></p>
+</form>
+</body>
+</html>
+{% endblock %}

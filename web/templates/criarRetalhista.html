@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>{% block title %} Add a New Retailer {% endblock %}</h1>
+<form method="post">
+    <p>
+        <label for="tin">TIN</label>
+        <input type="number" name="TIN"
+               placeholder="TIN">
+        </input>
+    </p>
+    <p>
+        <label for="nome">Nome</label>
+        <input type="text" name="nome"
+               placeholder="Nome">
+        </input>
+    </p>
+    <p>
+        <button type="submit">Submeter</button>
+    </p>
+</form>
+{% endblock %}

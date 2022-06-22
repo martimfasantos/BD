@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<html>
+<body>
+<h3>Listar subcategorias de uma SuperCategoria</h3>
+<form action="listarSubCategorias" method="post">
+    <p>Nome SuperCategoria: <input type="text" name="super_categoria"/></p>
+    <p><input type="submit" value="Submeter"/></p>
+</form>
+</body>
+</html>
+{% endblock %}

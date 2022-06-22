@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>{% block title %} Criar uma categoria simples {% endblock %}</h1>
+<form method="post">
+    <p>
+        <label for="nome">Name</label>
+        <input type="text" name="nome"
+               placeholder="Nome da categoria simples">
+        </input>
+    </p>
+
+    <p>
+        <button type="submit">Submeter</button>
+    </p>
+</form>
+{% endblock %}

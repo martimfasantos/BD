@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% block content %}
+<doctype html>
+    <title>Listar Replenishment Events(s) - Flask</title>
+    <body style="padding:20px">
+    {% if cursor %}
+    <table border="2px">
+        <thead>
+        <tr>
+            <th>Num_Serie</th>
+            <th>Fabricante</th>
+            <th>EAN</th>
+            <th>Nro</th>
+            <th>Instante</th>
+            <th>Unidades</th>
+            <th>Categoria</th>
+
+        </tr>
+        </thead>
+        <tbody>
+        {% for record in cursor %}
+        <tr>
+            <td>{{ record[0] }}</td>
+            <td>{{ record[1] }}</td>
+            <td>{{ record[2] }}</td>
+            <td>{{ record[3] }}</td>
+            <td>{{ record[4] }}</td>
+            <td>{{ record[5] }}</td>
+            <td>{{ record[6] }}</td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p> Error: failed to retreive data from database!</p>
+    {% endif %}
+    </body>
+</doctype>
+{% endblock %}
