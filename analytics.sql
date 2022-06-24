@@ -1,4 +1,6 @@
-----------------------------------------------Query 1----------------------------------------------
+----------------------------------------------------------------        
+--|                          Query 1                         |--
+----------------------------------------------------------------
 
 SELECT dia_semana, concelho, SUM(unidades) AS total_vendidos
 FROM vendas
@@ -7,7 +9,9 @@ WHERE CONCAT( CAST(ano AS VARCHAR), '-', CAST(mes AS VARCHAR), '-', CAST(dia_mes
 GROUP BY
 	GROUPING SETS ( (dia_semana), (concelho), () );
 
-----------------------------------------------Query 2----------------------------------------------
+----------------------------------------------------------------        
+--|                          Query 2                         |--
+----------------------------------------------------------------
 
 SELECT concelho, cat, dia_semana, SUM(unidades) AS total_vendidos
 FROM vendas
