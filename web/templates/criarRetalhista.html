@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<h1>{% block title %} Add a New Retailer {% endblock %}</h1>
+<h1>{% block title %} Adicionar um Retalhista {% endblock %}</h1>
 <form method="post">
     <p>
         <label for="tin">TIN</label>
@@ -12,7 +12,13 @@
     <p>
         <label for="nome_ret">Nome</label>
         <input type="text" name="nome_ret"
-               placeholder="Nome">
+               placeholder="Nome Retalhista">
+        </input>
+    </p>
+    <p>
+        <label for="nome_cat">Nome Categoria</label>
+        <input type="text" name="nome_cat"
+               placeholder="Nome Categoria">
         </input>
     </p>
     <p>
