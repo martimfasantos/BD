@@ -9,9 +9,9 @@ import psycopg2.extras
 
 ## SGBD configs
 DB_HOST="db.tecnico.ulisboa.pt"
-DB_USER="ist196915"
+DB_USER=""
 DB_DATABASE=DB_USER
-DB_PASSWORD="bdpassword"
+DB_PASSWORD=""
 DB_CONNECTION_STRING = "host=%s dbname=%s user=%s password=%s" % (DB_HOST, DB_DATABASE, DB_USER, DB_PASSWORD)
 
 app = Flask(__name__)

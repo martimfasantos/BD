@@ -1,6 +1,0 @@
-mudamos os atributos "nome" para nao haver confusao
-ponto de retalho: no instalada_em, o local é o nome de ponto de retalho dado que este é a primary key do ponto de retalho (enunciado)
-falar dos atributos not null
-
-## OLAP
-    - 2 query: optamos por ocultar a coluna do distrito (i.e Lisboa) por uma questao de consistencia, nao faria sentido apresentar essa coluna quando ja sabemos qual é o distrito à partida
